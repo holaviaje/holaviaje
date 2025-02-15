@@ -1,0 +1,6 @@
+@HolaViaje.Account_HostAddress = http://localhost:5076
+
+GET {{HolaViaje.Account_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
