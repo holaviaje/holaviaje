@@ -1,4 +1,5 @@
 using HolaViaje.Account.Data;
+using HolaViaje.Account.Features.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,18 @@ var devSpecificOrigins = "_devSpecificOrigins";
 builder.AddServiceDefaults();
 
 builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "AccountDB", configureDbContextOptions: options => { });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.SignIn.RequireConfirmedEmail = false;
+}).AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 
