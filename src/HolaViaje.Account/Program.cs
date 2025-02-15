@@ -1,8 +1,12 @@
+using HolaViaje.Account.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var devSpecificOrigins = "_devSpecificOrigins";
 
 builder.AddServiceDefaults();
+
+builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "AccountDB", configureDbContextOptions: options => { });
 
 // Add services to the container.
 
