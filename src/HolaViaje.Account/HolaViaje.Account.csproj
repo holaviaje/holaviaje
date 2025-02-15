@@ -19,6 +19,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="OpenIddict" Version="6.1.0" />
+    <PackageReference Include="OpenIddict.Core" Version="6.1.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.1.0" />
+    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="7.2.0" />
   </ItemGroup>
 
