@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HolaViaje.Account.Features.Auth.Models;
+namespace HolaViaje.Account.Features.Identity.Models;
 
 public class RegisterClientModel
 {
