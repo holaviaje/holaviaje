@@ -2,7 +2,7 @@
 
 public interface IUserProfileRepository
 {
-    Task<UserProfile?> GetAsync(int id, bool traking = false);
+    Task<UserProfile?> GetAsync(long id, bool traking = false);
     Task<UserProfile> CreateAsync(UserProfile userProfile);
     Task<UserProfile> UpdateAsync(UserProfile userProfile);
 }

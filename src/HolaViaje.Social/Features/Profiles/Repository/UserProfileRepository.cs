@@ -23,7 +23,7 @@ public class UserProfileRepository(ApplicationDbContext dbContext) : IUserProfil
         return userProfile;
     }
 
-    public async Task<UserProfile?> GetAsync(int id, bool traking = false)
+    public async Task<UserProfile?> GetAsync(long id, bool traking = false)
     {
         var query = userProfiles.Where(x => x.Id == id);
 
