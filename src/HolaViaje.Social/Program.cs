@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 var devSpecificOrigins = "_devSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,26 @@ builder.Services.AddCors(options =>
                                               "http://localhost:5128").AllowAnyHeader().AllowAnyMethod();
                       });
 });
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        // base-address of Auth Server
+        options.Authority = "https://localhost:7161/";
+
+        // name of the API resource
+        options.Audience = "Resourse";
+
+        options.RequireHttpsMetadata = false;
+
+        // Check preferred_username claim exists in the token. If it exists, .NET Core framework sets it to currently logged-in user name i-e User.Identity.Name
+        options.TokenValidationParameters.NameClaimType = "preferred_username";
+        options.TokenValidationParameters.RoleClaimType = System.Security.Claims.ClaimTypes.Role;
+    });
 
 var app = builder.Build();
 
