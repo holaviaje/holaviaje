@@ -44,7 +44,7 @@ public class UserProfile : EntityBase
     /// Gets or sets the user's profile picture.
     /// </summary>
     public ProfilePicture? Picture { get; set; }
-    public PlaceInfo? Place { get; set; }
+    public PlaceInfo Place { get; set; } = new();
     /// <summary>
     /// Gets or sets the user's control information.
     /// </summary>

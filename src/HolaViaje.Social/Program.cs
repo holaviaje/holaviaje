@@ -1,4 +1,6 @@
+using HolaViaje.Social.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text.Json.Serialization;
 
 var devSpecificOrigins = "_devSpecificOrigins";
 
@@ -6,8 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.AddServiceDefaults();
+builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "SocialDB");
 
 builder.Services.AddControllers();
+builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

@@ -1,3 +1,9 @@
 ﻿namespace HolaViaje.Social.Shared;
 
-public record PlaceInfo(string? Country, string? State, string? City, LocationInfo? Location) { }
+public record PlaceInfo
+{
+    public string? Country { get; set; }
+    public string? State { get; set; }
+    public string? City { get; set; }
+    public LocationInfo? Location { get; set; }
+}
