@@ -184,4 +184,15 @@ public class UserProfile : EntityBase
 
         UpdateLastModified();
     }
+
+    /// <summary>
+    /// Sets the profile picture of the user.
+    /// </summary>
+    /// <param name="picture"></param>
+    public void SetPicture(ProfilePicture picture)
+    {
+        if (Picture == picture) return;
+        Picture = picture;
+        UpdateLastModified();
+    }
 }

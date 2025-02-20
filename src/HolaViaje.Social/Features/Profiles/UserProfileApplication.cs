@@ -144,6 +144,33 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
     }
 
     /// <summary>
+    /// Update the spoken languages of a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="models"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    public async Task<OneOf<UserProfileViewModel, ErrorModel>> UpdatePictureAsync(long profileId, string fileName, string imageUrl, long userId)
+    {
+        var userProfile = await profileRepository.GetAsync(profileId, true);
+        if (userProfile is null)
+        {
+            return UserProfileErrorHelper.ProfileNotFound();
+        }
+
+        if (!userProfile.IsOwner(userId))
+        {
+            return UserProfileErrorHelper.ProfileAccessDenied();
+        }
+
+        var picture = new ProfilePicture(fileName, imageUrl) { LastModifiedAt = DateTime.UtcNow };
+
+        userProfile.SetPicture(picture);
+        var dbEntity = await profileRepository.UpdateAsync(userProfile);
+        return mapper.Map<UserProfileViewModel>(dbEntity);
+    }
+
+    /// <summary>
     /// Delete a user profile
     /// </summary>
     /// <param name="profileId"></param>

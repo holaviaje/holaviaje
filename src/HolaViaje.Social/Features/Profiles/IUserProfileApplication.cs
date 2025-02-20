@@ -48,6 +48,15 @@ public interface IUserProfileApplication
     /// <returns></returns>
     Task<OneOf<UserProfileViewModel, ErrorModel>> UpdateSpokenLanguagesAsync(long profileId, IEnumerable<SpokenLanguageModel> models, long userId);
     /// <summary>
+    /// Update the profile picture of a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="fileName"></param>
+    /// <param name="imageUrl"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    Task<OneOf<UserProfileViewModel, ErrorModel>> UpdatePictureAsync(long profileId, string fileName, string imageUrl, long userId);
+    /// <summary>
     /// Delete a user profile
     /// </summary>
     /// <param name="profileId">Profile identifier.</param>
