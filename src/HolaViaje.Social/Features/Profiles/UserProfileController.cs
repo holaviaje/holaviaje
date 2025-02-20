@@ -50,6 +50,16 @@ public class UserProfileController(IUserProfileApplication profileApplication, I
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync(long profileId, UserProfileModel model)
     {
+        if (profileId != UserIdentity)
+        {
+            return Forbid(UserProfileErrorHelper.ProfileAccessDenied().Message);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new ErrorModel(400, "Invalid profile model."));
+        }
+
         var result = await profileApplication.UpdateAsync(profileId, model, UserIdentity);
 
         return result.Match<IActionResult>(
@@ -65,6 +75,16 @@ public class UserProfileController(IUserProfileApplication profileApplication, I
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAvailabilityAsync(long profileId, AvailabilityModel model)
     {
+        if (profileId != UserIdentity)
+        {
+            return Forbid(UserProfileErrorHelper.ProfileAccessDenied().Message);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new ErrorModel(400, "Invalid availability model."));
+        }
+
         var result = await profileApplication.UpdateAvailabilityAsync(profileId, model, UserIdentity);
 
         return result.Match<IActionResult>(
@@ -80,6 +100,16 @@ public class UserProfileController(IUserProfileApplication profileApplication, I
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdatePlaceAsync(long profileId, PlaceInfoModel model)
     {
+        if (profileId != UserIdentity)
+        {
+            return Forbid(UserProfileErrorHelper.ProfileAccessDenied().Message);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new ErrorModel(400, "Invalid place info model."));
+        }
+
         var result = await profileApplication.UpdatePlaceAsync(profileId, model, UserIdentity);
 
         return result.Match<IActionResult>(
@@ -95,6 +125,11 @@ public class UserProfileController(IUserProfileApplication profileApplication, I
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateSpokenLanguagesAsync(long profileId, List<SpokenLanguageModel> models)
     {
+        if (profileId != UserIdentity)
+        {
+            return Forbid(UserProfileErrorHelper.ProfileAccessDenied().Message);
+        }
+
         var result = await profileApplication.UpdateSpokenLanguagesAsync(profileId, models, UserIdentity);
 
         return result.Match<IActionResult>(
@@ -113,7 +148,7 @@ public class UserProfileController(IUserProfileApplication profileApplication, I
     {
         if (profileId != UserIdentity)
         {
-            return Forbid();
+            return Forbid(UserProfileErrorHelper.ProfileAccessDenied().Message);
         }
 
         if (pictureFile is null)
