@@ -7,8 +7,18 @@ using OneOf;
 
 namespace HolaViaje.Social.Features.Profiles;
 
+/// <summary>
+/// UserProfileApplication
+/// </summary>
+/// <param name="profileRepository">User Profile Repository</param>
+/// <param name="mapper">AutoMapper</param>
 public class UserProfileApplication(IUserProfileRepository profileRepository, IMapper mapper) : IUserProfileApplication
 {
+    /// <summary>
+    /// Create a new user profile
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> CreateAsync(long userId)
     {
         if (profileRepository.GetAsync(userId) != null)
@@ -22,6 +32,13 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Update an existing user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="model"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> UpdateAsync(long profileId, UserProfileModel model, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId, true);
@@ -40,6 +57,13 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Update the availability of a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="model"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> UpdateAvailabilityAsync(long profileId, AvailabilityModel model, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId, true);
@@ -59,6 +83,13 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Update the place of a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="model"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> UpdatePlaceAsync(long profileId, PlaceInfoModel model, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId, true);
@@ -85,6 +116,13 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Update the spoken languages of a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="models"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> UpdateSpokenLanguagesAsync(long profileId, IEnumerable<SpokenLanguageModel> models, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId, true);
@@ -105,6 +143,12 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Delete a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> DeleteAsync(long profileId, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId, true);
@@ -123,6 +167,12 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }
 
+    /// <summary>
+    /// Get a user profile
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> GetAsync(long profileId, long userId)
     {
         var userProfile = await profileRepository.GetAsync(profileId);
