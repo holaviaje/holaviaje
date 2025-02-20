@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.AddServiceDefaults();
 builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "SocialDB");
+builder.AddAzureBlobClient("socialBlobs");
 
 builder.Services.AddControllers();
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
