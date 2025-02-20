@@ -9,7 +9,11 @@ public class UserProfile : EntityBase
     /// </summary>
     public UserProfile()
     {
-
+        Control = new()
+        {
+            CreatedAt = DateTime.UtcNow,
+            LastModifiedAt = DateTime.UtcNow
+        };
     }
 
     /// <summary>
@@ -17,6 +21,7 @@ public class UserProfile : EntityBase
     /// </summary>
     /// <param name="userId">User identifier owner of this profile.</param>
     public UserProfile(long userId)
+        : this()
     {
         Id = userId;
     }
@@ -79,7 +84,7 @@ public class UserProfile : EntityBase
     /// <summary>
     /// Gets or sets the user's control information.
     /// </summary>
-    public EntityControl Control { get; set; } = new();
+    public EntityControl Control { get; set; }
 
     /// <summary>
     /// Determines whether the profile is visible for the specified user.

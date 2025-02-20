@@ -26,7 +26,7 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
             return UserProfileErrorHelper.ProfileAlreadyExists();
         }
 
-        var userProfile = new UserProfile(userId) { Control = new() };
+        var userProfile = new UserProfile(userId);
         var dbEntity = await profileRepository.CreateAsync(userProfile);
 
         return mapper.Map<UserProfileViewModel>(dbEntity);

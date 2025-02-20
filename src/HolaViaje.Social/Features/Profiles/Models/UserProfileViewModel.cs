@@ -1,5 +1,6 @@
 ﻿using HolaViaje.Social.Shared;
 using HolaViaje.Social.Shared.Models;
+using System.Text.Json.Serialization;
 
 namespace HolaViaje.Social.Features.Profiles.Models;
 
@@ -28,6 +29,7 @@ public class UserProfileViewModel
     /// <summary>
     /// Gets or sets the gender of the user.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter<Gender>))]
     public Gender Gender { get; set; } = Gender.Unknown;
 
     /// <summary>
@@ -43,6 +45,7 @@ public class UserProfileViewModel
     /// <summary>
     /// Gets the visibility settings of the user's profile.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter<Visibility>))]
     public Visibility Visibility { get; set; }
 
     /// <summary>
@@ -53,6 +56,7 @@ public class UserProfileViewModel
     /// <summary>
     /// Gets or sets the user's travel companion preference.
     /// </summary>
+    [JsonConverter(typeof(JsonStringEnumConverter<TravelCompanion>))]
     public TravelCompanion TravelCompanion { get; set; } = TravelCompanion.None;
 
     /// <summary>
