@@ -19,7 +19,12 @@ public class BlobRepository(BlobServiceClient blobServiceClient) : IBlobReposito
         await blobContainerClient.CreateIfNotExistsAsync();
         var blobClient = blobContainerClient.GetBlobClient(blobName);
         await blobClient.UploadAsync(stream, true);
-        return blobClient.Uri.AbsoluteUri.ToString();
+
+        // Create a SAS token for the blob resource with a duration of 50 years
+        var startsOn = DateTimeOffset.UtcNow.AddMinutes(-5);
+        var expiresOn = DateTimeOffset.UtcNow.AddYears(50);
+
+        return CreateSASUri(blobClient, BlobSasPermissions.Read, startsOn, expiresOn).ToString();
     }
 
     public async Task<BlobLinkModel> UploadLinkAsync(string containerName, string fileName, TimeSpan linkExpiration)
