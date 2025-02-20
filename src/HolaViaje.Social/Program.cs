@@ -1,5 +1,5 @@
+using HolaViaje.Social;
 using HolaViaje.Social.Data;
-using HolaViaje.Social.Features;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json.Serialization;
 
@@ -48,7 +48,7 @@ builder.Services.AddAuthentication(options =>
         options.TokenValidationParameters.RoleClaimType = System.Security.Claims.ClaimTypes.Role;
     });
 
-builder.Services.AddSocialFeatures();
+builder.Services.AddSocialServices();
 
 var app = builder.Build();
 

@@ -21,7 +21,7 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
     /// <returns></returns>
     public async Task<OneOf<UserProfileViewModel, ErrorModel>> CreateAsync(long userId)
     {
-        if (profileRepository.GetAsync(userId) != null)
+        if (await profileRepository.GetAsync(userId) != null)
         {
             return UserProfileErrorHelper.ProfileAlreadyExists();
         }
