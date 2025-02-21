@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 
-namespace HolaViaje.Social.BlobStorage;
+namespace HolaViaje.Infrastructure.BlobStorage;
 
 public class BlobRepository(BlobServiceClient blobServiceClient) : IBlobRepository
 {

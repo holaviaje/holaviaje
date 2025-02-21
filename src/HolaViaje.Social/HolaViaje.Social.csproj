@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HolaViaje.Infrastructure\HolaViaje.Infrastructure.csproj" />
     <ProjectReference Include="..\HolaViaje.ServiceDefaults\HolaViaje.ServiceDefaults.csproj" />
   </ItemGroup>
 

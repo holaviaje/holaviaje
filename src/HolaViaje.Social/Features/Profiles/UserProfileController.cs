@@ -1,5 +1,5 @@
-﻿using HolaViaje.Social.BlobStorage;
-using HolaViaje.Social.Controllers;
+﻿using HolaViaje.Infrastructure.BlobStorage;
+using HolaViaje.Infrastructure.Controllers;
 using HolaViaje.Social.Features.Profiles.Models;
 using HolaViaje.Social.Handlers;
 using HolaViaje.Social.Shared.Models;
