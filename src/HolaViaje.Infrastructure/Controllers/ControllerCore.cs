@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace HolaViaje.Social.Controllers;
+namespace HolaViaje.Infrastructure.Controllers;
 
 public class ControllerCore : ControllerBase
 {

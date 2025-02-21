@@ -1,7 +1,7 @@
 using HolaViaje.Account.Data;
 using HolaViaje.Account.Features.Identity;
 using HolaViaje.Account.Features.Identity.Events;
-using HolaViaje.Infrastructure;
+using HolaViaje.Infrastructure.Messaging;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -107,7 +107,7 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Services.AddInfrastructure();
+builder.Services.AddMessaging();
 
 var app = builder.Build();
 
