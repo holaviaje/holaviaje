@@ -1,5 +1,7 @@
 ﻿using HolaViaje.Account.Extensions;
+using HolaViaje.Account.Features.Identity.Events;
 using HolaViaje.Account.Features.Identity.Models;
+using HolaViaje.Infrastructure.Messaging;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +20,8 @@ public class AuthController(
           UserManager<ApplicationUser> _userManager,
           SignInManager<ApplicationUser> _signInManager,
           //IOpenIddictApplicationManager _applicationManager,
-          IOpenIddictScopeManager _scopeManager) : ControllerBase
+          IOpenIddictScopeManager _scopeManager,
+          IEventBus _eventBus) : ControllerBase
 {
     [HttpPost("~/connect/register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,6 +41,14 @@ public class AuthController(
 
             if (result.Succeeded)
             {
+                // Publish event
+                var userInfo = await _userManager.FindByNameAsync(model.UserName);
+
+                if (userInfo is not null)
+                {
+                    await _eventBus.Publish(new UserRegisteredEvent { AccountId = userInfo.Id, Email = userInfo.Email });
+                }
+
                 return Ok();
             }
 

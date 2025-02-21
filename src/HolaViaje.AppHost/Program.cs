@@ -2,6 +2,12 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+#region Messaging
+var kafka = builder.AddKafka("kafka")
+    .WithDataVolume(isReadOnly: false)
+    .WithKafkaUI();
+#endregion
+
 #region Azure Storage
 
 var socialStorage = builder.AddAzureStorage("socialStorage")
@@ -32,12 +38,16 @@ postgresql.WithDataVolume().WithPgAdmin();
 
 builder.AddProject<HolaViaje_Account>("account-api")
     .WithReference(accountDb)
-    .WaitFor(accountDb);
+    .WaitFor(accountDb)
+    .WithReference(kafka)
+    .WaitFor(kafka);
 
 builder.AddProject<HolaViaje_Social>("social-api")
     .WithReference(socialDb)
     .WaitFor(socialDb)
     .WithReference(socialBlobs)
-    .WaitFor(socialStorage);
+    .WaitFor(socialStorage)
+    .WithReference(kafka)
+    .WaitFor(kafka);
 
 builder.Build().Run();

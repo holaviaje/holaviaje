@@ -1,5 +1,8 @@
+using HolaViaje.Account.Features.Identity.Events;
 using HolaViaje.Social;
 using HolaViaje.Social.Data;
+using HolaViaje.Social.IntegrationEvents.Consumers;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json.Serialization;
 
@@ -11,6 +14,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "SocialDB");
 builder.AddAzureBlobClient("socialBlobs");
+
+builder.Services.AddMassTransit(x =>
+{
+    const string accountEventsGroup = "events-account-group-1";
+    var kafkaBrokerServers = builder.Configuration.GetConnectionString("kafka");
+
+    x.UsingInMemory((context, cfg) => cfg.ConfigureEndpoints(context));
+
+    x.AddRider(rider =>
+    {
+        rider.AddConsumer<IdentityEventsConsumer>();
+        rider.UsingKafka((context, k) =>
+        {
+            k.Host(kafkaBrokerServers);
+
+            k.TopicEndpoint<UserRegisteredEvent>(IdentityEventConsts.AccountEventsTopic, accountEventsGroup, e =>
+            {
+                e.ConfigureConsumer<IdentityEventsConsumer>(context);
+                e.CreateIfMissing();
+            });
+        });
+    });
+});
 
 builder.Services.AddControllers();
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));

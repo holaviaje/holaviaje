@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02460A18-D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HolaViaje.Social.Tests", "test\HolaViaje.Social.Tests\HolaViaje.Social.Tests.csproj", "{F35BA9C7-1D75-4A96-AD63-8CF526BF6886}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{7EA7B10F-6BDB-48D0-9030-AF17C04BA8A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HolaViaje.Infrastructure", "src\HolaViaje.Infrastructure\HolaViaje.Infrastructure.csproj", "{5182DA14-3174-4AE9-917E-47A2B71B3745}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,10 @@ Global
 		{F35BA9C7-1D75-4A96-AD63-8CF526BF6886}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F35BA9C7-1D75-4A96-AD63-8CF526BF6886}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F35BA9C7-1D75-4A96-AD63-8CF526BF6886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5182DA14-3174-4AE9-917E-47A2B71B3745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5182DA14-3174-4AE9-917E-47A2B71B3745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5182DA14-3174-4AE9-917E-47A2B71B3745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5182DA14-3174-4AE9-917E-47A2B71B3745}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +70,7 @@ Global
 		{DE22DEE4-2B95-4024-9D6C-F475262335DE} = {8CDDD572-0B5E-4DF0-918E-3A85B9230655}
 		{460D5FC1-BF82-4967-8A70-A84BCC726C0F} = {DE22DEE4-2B95-4024-9D6C-F475262335DE}
 		{F35BA9C7-1D75-4A96-AD63-8CF526BF6886} = {02460A18-D55A-4134-A702-5EFF525DB6EF}
+		{7EA7B10F-6BDB-48D0-9030-AF17C04BA8A1} = {8CDDD572-0B5E-4DF0-918E-3A85B9230655}
+		{5182DA14-3174-4AE9-917E-47A2B71B3745} = {7EA7B10F-6BDB-48D0-9030-AF17C04BA8A1}
 	EndGlobalSection
 EndGlobal
