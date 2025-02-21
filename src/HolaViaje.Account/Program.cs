@@ -1,5 +1,8 @@
 using HolaViaje.Account.Data;
 using HolaViaje.Account.Features.Identity;
+using HolaViaje.Account.Features.Identity.Events;
+using HolaViaje.Infrastructure;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +14,19 @@ builder.AddServiceDefaults();
 builder.AddNpgsqlDbContext<ApplicationDbContext>(connectionName: "AccountDB", configureDbContextOptions: options =>
 {
     options.UseOpenIddict();
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    var kafkaBrokerServers = builder.Configuration.GetConnectionString("kafka");
+
+    x.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
+
+    x.AddRider(rider =>
+    {
+        rider.AddProducer<UserRegisteredEvent>(IdentityEventConsts.AccountEventsTopic);
+        rider.UsingKafka((context, k) => { k.Host(kafkaBrokerServers); });
+    });
 });
 
 builder.Services.AddAuthorization();
@@ -90,6 +106,8 @@ builder.Services.AddCors(options =>
                                               "http://localhost:5076").AllowAnyHeader().AllowAnyMethod();
                       });
 });
+
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
