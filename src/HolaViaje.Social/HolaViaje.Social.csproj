@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\HolaViaje.Account\Features\Identity\Events\IdentityEventConsts.cs" Link="IntegrationEvents\IdentityEventConsts.cs" />
-    <Compile Include="..\HolaViaje.Account\Features\Identity\Events\UserRegisteredEvent.cs" Link="IntegrationEvents\UserRegisteredEvent.cs" />
+    <Compile Include="..\HolaViaje.Account\Features\Identity\Events\IdentityEventConsts.cs" Link="IntegrationEvents\Identity\IdentityEventConsts.cs" />
+    <Compile Include="..\HolaViaje.Account\Features\Identity\Events\UserRegistered.cs" Link="IntegrationEvents\Identity\UserRegistered.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +36,10 @@
   <ItemGroup>
     <ProjectReference Include="..\HolaViaje.Infrastructure\HolaViaje.Infrastructure.csproj" />
     <ProjectReference Include="..\HolaViaje.ServiceDefaults\HolaViaje.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="IntegrationEvents\Consumers\" />
   </ItemGroup>
 
 </Project>

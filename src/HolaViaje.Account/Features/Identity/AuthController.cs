@@ -46,7 +46,7 @@ public class AuthController(
 
                 if (userInfo is not null)
                 {
-                    await _eventBus.Publish(new UserRegisteredEvent { AccountId = userInfo.Id, Email = userInfo.Email });
+                    await _eventBus.Publish(new UserRegistered { AccountId = userInfo.Id, Email = userInfo.Email });
                 }
 
                 return Ok();
