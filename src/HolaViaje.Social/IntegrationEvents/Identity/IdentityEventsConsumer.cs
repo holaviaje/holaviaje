@@ -2,12 +2,12 @@
 using HolaViaje.Social.Features.Profiles;
 using MassTransit;
 
-namespace HolaViaje.Social.IntegrationEvents.Consumers;
+namespace HolaViaje.Social.IntegrationEvents.Identity;
 
 public class IdentityEventsConsumer(IUserProfileApplication profileApplication,
-    ILogger<UserProfileApplication> logger) : IConsumer<UserRegisteredEvent>
+    ILogger<UserProfileApplication> logger) : IConsumer<UserRegistered>
 {
-    public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
+    public async Task Consume(ConsumeContext<UserRegistered> context)
     {
         var result = await profileApplication.CreateAsync(context.Message.AccountId);
 

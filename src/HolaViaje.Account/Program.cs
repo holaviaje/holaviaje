@@ -24,7 +24,7 @@ builder.Services.AddMassTransit(x =>
 
     x.AddRider(rider =>
     {
-        rider.AddProducer<UserRegisteredEvent>(IdentityEventConsts.AccountEventsTopic);
+        rider.AddProducer<UserRegistered>(IdentityEventConsts.AccountEventsTopic);
         rider.UsingKafka((context, k) => { k.Host(kafkaBrokerServers); });
     });
 });

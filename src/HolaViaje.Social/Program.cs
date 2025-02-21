@@ -2,7 +2,7 @@ using HolaViaje.Account.Features.Identity.Events;
 using HolaViaje.Infrastructure;
 using HolaViaje.Social;
 using HolaViaje.Social.Data;
-using HolaViaje.Social.IntegrationEvents.Consumers;
+using HolaViaje.Social.IntegrationEvents.Identity;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json.Serialization;
@@ -30,7 +30,7 @@ builder.Services.AddMassTransit(x =>
         {
             k.Host(kafkaBrokerServers);
 
-            k.TopicEndpoint<UserRegisteredEvent>(IdentityEventConsts.AccountEventsTopic, accountEventsGroup, e =>
+            k.TopicEndpoint<UserRegistered>(IdentityEventConsts.AccountEventsTopic, accountEventsGroup, e =>
             {
                 e.ConfigureConsumer<IdentityEventsConsumer>(context);
                 e.CreateIfMissing();
