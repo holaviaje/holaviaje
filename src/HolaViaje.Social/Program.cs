@@ -1,4 +1,5 @@
 using HolaViaje.Account.Features.Identity.Events;
+using HolaViaje.Infrastructure;
 using HolaViaje.Social;
 using HolaViaje.Social.Data;
 using HolaViaje.Social.IntegrationEvents.Consumers;
@@ -75,6 +76,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddSocialServices();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

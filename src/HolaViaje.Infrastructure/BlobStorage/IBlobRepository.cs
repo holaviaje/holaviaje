@@ -1,4 +1,4 @@
-﻿namespace HolaViaje.Social.BlobStorage;
+﻿namespace HolaViaje.Infrastructure.BlobStorage;
 
 public interface IBlobRepository
 {
