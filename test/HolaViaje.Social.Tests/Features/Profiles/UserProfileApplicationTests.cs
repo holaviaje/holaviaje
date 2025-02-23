@@ -2,6 +2,7 @@ using AutoMapper;
 using HolaViaje.Social.Features.Profiles;
 using HolaViaje.Social.Features.Profiles.Models;
 using HolaViaje.Social.Features.Profiles.Repository;
+using HolaViaje.Social.Shared;
 using HolaViaje.Social.Shared.Models;
 using Moq;
 
