@@ -189,7 +189,7 @@ public class Post : EntityBase
     /// </summary>
     /// <param name="userId">User Identifier.</param>
     /// <returns>True if is the owner, else false.</returns>
-    public bool IsOwner(long userId) => Id == userId;
+    public bool IsOwner(long userId) => UserId == userId;
 
     /// <summary>
     /// Determines whether the post is associated with a page.
