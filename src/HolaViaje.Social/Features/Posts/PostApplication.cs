@@ -188,6 +188,43 @@ public class PostApplication(IPostRepository postRepository,
 
     }
 
+    public async Task<OneOf<MediaFileModel, ErrorModel>> MarkAsUploadedAsync(long postId, string fileId, long userId, CancellationToken cancellationToken = default)
+    {
+        var post = await postRepository.GetAsync(postId, true);
+
+        if (post is null || post.IsDeleted())
+        {
+            return PostErrorModelHelper.ErrorPostNotFound();
+        }
+
+        if (!post.IsOwner(userId))
+        {
+            if (post.PageId > 0)
+            {
+                // TODO: check if the user has permission to update post on the page
+                return PostErrorModelHelper.ErrorUpdatePost();
+            }
+            else
+            {
+                return PostErrorModelHelper.ErrorUpdatePost();
+            }
+        }
+
+        var mediaFile = post.GetMediaFile(fileId);
+
+        if (mediaFile is null)
+        {
+            return PostErrorModelHelper.ErrorMediaFileNotFound();
+        }
+
+        mediaFile.Uploaded = true;
+        post.UpdateLastModified();
+
+        var dbEntity = await postRepository.UpdateAsync(post);
+        return mapper.Map<MediaFileModel>(dbEntity);
+
+    }
+
     public async Task<OneOf<MediaFileModel, ErrorModel>> DeleteMediaFileAsync(long postId, string fileId, long userId, CancellationToken cancellationToken = default)
     {
         var post = await postRepository.GetAsync(postId, true);

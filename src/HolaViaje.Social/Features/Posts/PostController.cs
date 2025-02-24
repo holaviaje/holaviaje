@@ -102,12 +102,27 @@ public class PostController(IPostApplication postApplication) : ControllerCore
     }
 
     [Authorize]
+    [HttpPost("{postId}/files/{fileId}/uploaded")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> MarkAsUploadedAsync(long postId, string fileId, CancellationToken cancellationToken = default)
+    {
+        var result = await postApplication.MarkAsUploadedAsync(postId, fileId, UserIdentity, cancellationToken);
+
+        return result.Match<IActionResult>(
+            file => NoContent(),
+            error => BadRequest(error));
+    }
+
+    [Authorize]
     [HttpDelete("{postId}/files/{fileId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteFileAsyn(long postId, string fileId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> DeleteFileAsync(long postId, string fileId, CancellationToken cancellationToken = default)
     {
         var result = await postApplication.DeleteMediaFileAsync(postId, fileId, UserIdentity, cancellationToken);
 
