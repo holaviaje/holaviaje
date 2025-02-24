@@ -10,4 +10,5 @@ public static class PostErrorModelHelper
     public static ErrorModel ErrorUploadsPending() => new(400, "The're some uploads pending, complete the uploads or remove the files first.");
     public static ErrorModel ErrorMediaFileNotFound() => new(400, "Post not found.");
     public static ErrorModel ErrorMaxFilesQuantityReached() => new(400, "The maximum number of files has been reached.");
+    public static ErrorModel ErrorAccessDenied() => new ErrorModel(403, "You can't access to the this post.");
 }

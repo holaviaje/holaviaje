@@ -13,7 +13,7 @@ public class PostBasicModel
     /// Gets or sets the visibility settings of the post.
     /// </summary>
     public Visibility Visibility { get; set; } = Visibility.Public;
-    public required PlaceInfoModel Place { get; set; }
+    public PlaceInfoModel? Place { get; set; }
     public ICollection<PostMemberModel> Members { get; set; } = [];
     public bool KeepOpen { get; set; }
 }

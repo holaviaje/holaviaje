@@ -114,11 +114,17 @@ public class Post : EntityBase
     /// <exception cref="InvalidOperationException">If the user profile is deleted.</exception>
     private void EnsureNotDeleted()
     {
-        if (Control.IsDeleted)
+        if (IsDeleted())
         {
             throw new InvalidOperationException("The post is deleted.");
         }
     }
+
+    /// <summary>
+    /// Determines whether the post is deleted.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsDeleted() => Control.IsDeleted;
 
     /// <summary>
     /// Sets the place information of the user.

@@ -57,7 +57,7 @@ public class PostApplication(IPostRepository postRepository,
     {
         var post = await postRepository.GetAsync(postId, true);
 
-        if (post is null)
+        if (post is null || post.IsDeleted())
         {
             return PostErrorModelHelper.ErrorPostNotFound();
         }
@@ -89,11 +89,10 @@ public class PostApplication(IPostRepository postRepository,
 
         post.Content = content;
         post.IsHtmlContent = htmlContent;
-
-
-        post.SetPlace(model.Place.FromModel());
-        post.SetMembers(model.Members.FromModel());
         post.EditMode = model.KeepOpen;
+        post.SetPlace(model.Place?.FromModel() ?? new());
+        post.SetMembers(model.Members.FromModel());
+        post.UpdateLastModified();
 
         var dbEntity = await postRepository.UpdateAsync(post);
         return mapper.Map<PostViewModel>(dbEntity);
@@ -104,7 +103,7 @@ public class PostApplication(IPostRepository postRepository,
     {
         var post = await postRepository.GetAsync(postId, true);
 
-        if (post is null)
+        if (post is null || post.IsDeleted())
         {
             return PostErrorModelHelper.ErrorPostNotFound();
         }
@@ -128,6 +127,7 @@ public class PostApplication(IPostRepository postRepository,
         }
 
         post.Publish();
+        post.UpdateLastModified();
 
         var dbEntity = await postRepository.UpdateAsync(post);
 
@@ -143,11 +143,11 @@ public class PostApplication(IPostRepository postRepository,
 
     }
 
-    public async Task<OneOf<PostViewModel, ErrorModel>> CreateUploadLinkAsync(long postId, UploadLinkModel model, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<MediaFileModel, ErrorModel>> CreateUploadLinkAsync(long postId, UploadLinkModel model, long userId, CancellationToken cancellationToken = default)
     {
         var post = await postRepository.GetAsync(postId, true);
 
-        if (post is null)
+        if (post is null || post.IsDeleted())
         {
             return PostErrorModelHelper.ErrorPostNotFound();
         }
@@ -170,6 +170,9 @@ public class PostApplication(IPostRepository postRepository,
             return PostErrorModelHelper.ErrorMaxFilesQuantityReached();
         }
 
+        // Is always true because the media file is not uploaded yet.
+        post.EditMode = true;
+
         var extension = Path.GetExtension(model.FileName);
         var fileId = Guid.NewGuid().ToString("N");
         var fileName = $"{fileId}{extension}";
@@ -178,20 +181,18 @@ public class PostApplication(IPostRepository postRepository,
         var mediaFile = new MediaFile(fileId, model.FileName, model.FileSize, GetContentType(extension), containerName, blobLink.AccessUrl);
 
         post.AddMediaFile(mediaFile);
-
-        // Is always true because the media file is not uploaded yet.
-        post.EditMode = true;
+        post.UpdateLastModified();
 
         var dbEntity = await postRepository.UpdateAsync(post);
-        return mapper.Map<PostViewModel>(dbEntity);
+        return mapper.Map<MediaFileModel>(dbEntity);
 
     }
 
-    public async Task<OneOf<PostViewModel, ErrorModel>> DeleteMediaFileAsync(long postId, string fileId, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<MediaFileModel, ErrorModel>> DeleteMediaFileAsync(long postId, string fileId, long userId, CancellationToken cancellationToken = default)
     {
         var post = await postRepository.GetAsync(postId, true);
 
-        if (post is null)
+        if (post is null || post.IsDeleted())
         {
             return PostErrorModelHelper.ErrorPostNotFound();
         }
@@ -219,9 +220,10 @@ public class PostApplication(IPostRepository postRepository,
         await blobRepository.DeleteAsync(mediaFile.ContainerName, mediaFile.FileName);
 
         post.RemoveMediaFile(mediaFile);
+        post.UpdateLastModified();
 
         var dbEntity = await postRepository.UpdateAsync(post, cancellationToken);
-        return mapper.Map<PostViewModel>(dbEntity);
+        return mapper.Map<MediaFileModel>(dbEntity);
 
     }
 
@@ -229,7 +231,7 @@ public class PostApplication(IPostRepository postRepository,
     {
         var post = await postRepository.GetAsync(postId, true);
 
-        if (post is null)
+        if (post is null || post.IsDeleted())
         {
             return PostErrorModelHelper.ErrorPostNotFound();
         }
@@ -265,6 +267,27 @@ public class PostApplication(IPostRepository postRepository,
         await eventBus.Publish(unpublishedEvent);
 
         return mapper.Map<PostViewModel>(dbEntity);
+
+    }
+
+    public async Task<OneOf<PostViewModel, ErrorModel>> GetAsync(long postId, long userId, CancellationToken cancellationToken = default)
+    {
+        var post = await postRepository.GetAsync(postId, false, cancellationToken);
+
+        if (post is null || post.IsDeleted())
+        {
+            return PostErrorModelHelper.ErrorPostNotFound();
+        }
+
+        if (!post.IsVisibleFor(userId))
+        {
+            if (!post.IsAssociatedWithPage())
+            {
+                return PostErrorModelHelper.ErrorAccessDenied();
+            }
+        }
+
+        return mapper.Map<PostViewModel>(post);
 
     }
 
