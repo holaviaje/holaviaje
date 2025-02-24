@@ -45,5 +45,13 @@ internal class PostConfiguration : IEntityTypeConfiguration<Post>
             f.Property<long>("Id");
             f.HasKey("Id");
         });
+
+        builder.OwnsOne(x => x.Control, control =>
+        {
+            control.Property(c => c.CreatedAt).HasColumnName("CreatedAt");
+            control.Property(c => c.LastModifiedAt).HasColumnName("LastModifiedAt");
+            control.Property(c => c.DeletedAt).HasColumnName("DeletedAt");
+            control.Property(c => c.IsDeleted).HasColumnName("IsDeleted");
+        });
     }
 }
