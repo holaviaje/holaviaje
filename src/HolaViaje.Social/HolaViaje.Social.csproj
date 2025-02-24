@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="IntegrationEvents\Consumers\**" />
+    <Content Remove="IntegrationEvents\Consumers\**" />
+    <EmbeddedResource Remove="IntegrationEvents\Consumers\**" />
+    <None Remove="IntegrationEvents\Consumers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\HolaViaje.Account\Features\Identity\Events\IdentityEventConsts.cs" Link="IntegrationEvents\Identity\IdentityEventConsts.cs" />
     <Compile Include="..\HolaViaje.Account\Features\Identity\Events\UserRegistered.cs" Link="IntegrationEvents\Identity\UserRegistered.cs" />
   </ItemGroup>
@@ -19,6 +26,7 @@
     <PackageReference Include="Aspire.Confluent.Kafka" Version="9.0.0" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="HtmlSanitizer" Version="9.0.876" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="MassTransit.Kafka" Version="8.3.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
@@ -36,10 +44,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HolaViaje.Infrastructure\HolaViaje.Infrastructure.csproj" />
     <ProjectReference Include="..\HolaViaje.ServiceDefaults\HolaViaje.ServiceDefaults.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="IntegrationEvents\Consumers\" />
   </ItemGroup>
 
 </Project>

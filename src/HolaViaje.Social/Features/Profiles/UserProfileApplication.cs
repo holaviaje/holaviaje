@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HolaViaje.Social.Features.Profiles.Models;
 using HolaViaje.Social.Features.Profiles.Repository;
-using HolaViaje.Social.Shared;
 using HolaViaje.Social.Shared.Models;
 using OneOf;
 
@@ -103,15 +102,7 @@ public class UserProfileApplication(IUserProfileRepository profileRepository, IM
             return UserProfileErrorHelper.ProfileAccessDenied();
         }
 
-        var place = new PlaceInfo
-        {
-            Country = model.Country,
-            State = model.State,
-            City = model.City,
-            Location = model.Location != null ? new LocationInfo(model.Location.Latitude, model.Location.Longitude) : null
-        };
-
-        userProfile.SetPlace(place);
+        userProfile.SetPlace(model.FromModel());
         var dbEntity = await profileRepository.UpdateAsync(userProfile);
         return mapper.Map<UserProfileViewModel>(dbEntity);
     }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using HolaViaje.Social.Shared;
+using System.Text.Json.Serialization;
 
 namespace HolaViaje.Social.Features.Profiles.Models;
 

@@ -1,4 +1,4 @@
-﻿namespace HolaViaje.Social.Features.Profiles;
+﻿namespace HolaViaje.Social.Shared;
 
 public enum Visibility
 {
