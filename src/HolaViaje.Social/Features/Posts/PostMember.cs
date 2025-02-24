@@ -1,3 +1,3 @@
 ﻿namespace HolaViaje.Social.Features.Posts;
 
-public record PostMember(long UserId, DateTime CreatedAt) { }
+public record PostMember(long UserId) { }

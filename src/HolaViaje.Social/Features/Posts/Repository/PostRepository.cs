@@ -22,7 +22,7 @@ public class PostRepository(ApplicationDbContext dbContext) : IPostRepository
         return post;
     }
 
-    public async Task<Post?> GetAsync(int id, bool traking = false, CancellationToken cancellationToken = default)
+    public async Task<Post?> GetAsync(long id, bool traking = false, CancellationToken cancellationToken = default)
     {
         var query = posts.Where(x => x.Id == id);
 

@@ -13,37 +13,82 @@ public class Post : EntityBase
         };
     }
 
-    public Post(int userId, int pageId)
+    public Post(long userId, int pageId)
         : this()
     {
         UserId = userId;
         PageId = pageId;
     }
 
+    /// <summary>
+    /// Gets or sets the type of the post.
+    /// </summary>
     public PostType Type { get; set; } = PostType.Short;
+    /// <summary>
+    /// Gets or sets the status of the post.
+    /// </summary>
     public PostStatus Status { get; set; } = PostStatus.Unpublished;
+    /// <summary>
+    /// Gets or sets the content of the post.
+    /// </summary>
     public string? Content { get; set; }
+    /// <summary>
+    /// Gets or sets if the content is HTML.
+    /// </summary>
     public bool IsHtmlContent { get; set; }
+    /// <summary>
+    /// Gets or sets the media files of the post.
+    /// </summary>
     public ICollection<MediaFile> MediaFiles { get; set; } = [];
+    /// <summary>
+    /// Gets or sets the user identifier.
+    /// </summary>
     public long UserId { get; set; }
+    /// <summary>
+    /// Gets or sets the page identifier.
+    /// </summary>
     public int PageId { get; set; } = 0;
     /// <summary>
     /// Gets or sets the visibility settings of the post.
     /// </summary>
     public Visibility Visibility { get; set; } = Visibility.Public;
-
+    /// <summary>
+    /// Gets or sets the members of the post.
+    /// </summary>
     public ICollection<PostMember> Members { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the place information.
     /// </summary>
     public PlaceInfo Place { get; set; } = new();
+    /// <summary>
+    /// Gets or sets if the post is a draft.
+    /// </summary>
     public bool IsDraft { get; set; }
+    /// <summary>
+    /// Gets or sets if the post is in edit mode.
+    /// </summary>
     public bool EditMode { get; set; }
     /// <summary>
     /// Gets or sets the post control information.
     /// </summary>
     public EntityControl Control { get; set; }
+    /// <summary>
+    /// Gets the allowed file quantity based on the post type.
+    /// </summary>
+    /// <returns>Quantity of files allowed.</returns>
+    public short AllowedFileQuantity
+    {
+        get
+        {
+            return Type switch
+            {
+                PostType.Short => 1,
+                PostType.Live => 1,
+                _ => 6
+            };
+        }
+    }
 
     /// <summary>
     /// Updates the last modified date.
@@ -139,4 +184,72 @@ public class Post : EntityBase
     /// <param name="userId">User Identifier.</param>
     /// <returns>True if is the owner, else false.</returns>
     public bool IsOwner(long userId) => Id == userId;
+
+    /// <summary>
+    /// Determines whether the post is associated with a page.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsAssociatedWithPage() => PageId > 0;
+
+    /// <summary>
+    /// Gets if the post can add a media file.
+    /// </summary>
+    /// <returns></returns>
+    public bool CanAddMediaFile() => MediaFiles.Count < AllowedFileQuantity;
+
+    /// <summary>
+    /// Adds a media file to the post.
+    /// </summary>
+    /// <param name="mediaFile"></param>
+    public void AddMediaFile(MediaFile mediaFile)
+    {
+        MediaFiles.Add(mediaFile);
+        UpdateLastModified();
+    }
+
+    /// <summary>
+    /// Removes a media file from the post.
+    /// </summary>
+    /// <param name="mediaFile"></param>
+    public void RemoveMediaFile(MediaFile mediaFile)
+    {
+        MediaFiles.Remove(mediaFile);
+        UpdateLastModified();
+    }
+
+    /// <summary>
+    /// Gets a media file by its identifier.
+    /// </summary>
+    /// <param name="fileId">File Identifier.</param>
+    /// <returns>MediaFile or null.</returns>
+    public MediaFile? GetMediaFile(string fileId) => MediaFiles.FirstOrDefault(m => m.FileId == fileId);
+
+    /// <summary>
+    /// Publishes the post.
+    /// </summary>
+    public void Publish()
+    {
+        if (EditMode)
+        {
+            EditMode = false;
+        }
+
+        if (IsDraft)
+        {
+            IsDraft = false;
+        }
+
+        if (Status != PostStatus.Published)
+        {
+            Status = PostStatus.Published;
+        }
+
+        UpdateLastModified();
+    }
+
+    /// <summary>
+    /// Gets if the post has pending uploads.
+    /// </summary>
+    /// <returns></returns>
+    public bool UploadsPending() => MediaFiles.Any(m => !m.Uploaded);
 }
