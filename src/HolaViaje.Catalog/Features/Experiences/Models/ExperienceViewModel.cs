@@ -18,5 +18,5 @@ public class ExperienceViewModel
     public BookInfoModel? BookInfirmation { get; set; }
     public bool IsAvailable { get; set; } = true;
     public EntityControlModel? Control { get; set; }
-    public ICollection<ExperienceTransalationViewModel> Transalations { get; set; } = [];
+    public ICollection<ExperienceTranslationViewModel> Transalations { get; set; } = [];
 }

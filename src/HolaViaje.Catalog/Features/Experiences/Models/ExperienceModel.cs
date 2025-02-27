@@ -14,5 +14,5 @@ public class ExperienceModel
     public int MaxGuests { get; set; }
     public BookInfoModel? BookInfirmation { get; set; }
     public bool IsAvailable { get; set; }
-    public ICollection<ExperienceTransalationModel> Translations { get; set; } = [];
+    public ICollection<ExperienceTranslationModel> Translations { get; set; } = [];
 }

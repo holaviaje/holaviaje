@@ -3,7 +3,7 @@ using HolaViaje.Global.Shared.Models;
 
 namespace HolaViaje.Catalog.Features.Experiences.Models;
 
-public class ExperienceTransalationModel
+public class ExperienceTranslationModel
 {
     public required string LanguageCode { get; set; }
     public string? Title { get; set; }

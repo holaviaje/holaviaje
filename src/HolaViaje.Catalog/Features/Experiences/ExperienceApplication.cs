@@ -96,7 +96,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
     }
 
 
-    private void ApplyTranslationUpdates(ExperienceTranslation translation, ExperienceTransalationModel model)
+    private void ApplyTranslationUpdates(ExperienceTranslation translation, ExperienceTranslationModel model)
     {
         translation.Title = model.Title;
         translation.Description = model.Description;
@@ -112,7 +112,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         translation.SetPickup(model.Pickup?.FromModel() ?? new Pickup());
     }
 
-    public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddTransalationAsync(Guid experienceId, ExperienceTransalationModel model, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddTransalationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
     {
 
         if (model == null)
@@ -148,7 +148,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         return mapper.Map<ExperienceViewModel>(result);
     }
 
-    public async Task<OneOf<ExperienceViewModel, ErrorModel>> UpdateTransalationAsync(Guid experienceId, ExperienceTransalationModel model, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> UpdateTransalationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
     {
 
         if (model == null)
