@@ -19,7 +19,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="7.2.0" />
+    <PackageReference Include="Throw" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -79,7 +79,7 @@ internal class ExperienceTransalationConfiguration : IEntityTypeConfiguration<Ex
             });
         });
 
-        builder.OwnsMany(x => x.AddionalInfos, x =>
+        builder.OwnsMany(x => x.AdditionalInfos, x =>
         {
             x.ToTable("ExperienceAdditionalInfos");
             x.WithOwner().HasForeignKey("OwnerId");

@@ -23,7 +23,7 @@ public class ExperienceRepository(ApplicationDbContext dbContext) : IExperienceR
         return experience;
     }
 
-    public async Task<Experience?> GetAsync(Guid id, bool tracking = false, CancellationToken cancellationToken = default)
+    public async Task<Experience?> GetAsync(Guid id, string languageCode, bool tracking = false, CancellationToken cancellationToken = default)
     {
         var query = experiences.Where(x => x.Id == id);
 
@@ -32,19 +32,36 @@ public class ExperienceRepository(ApplicationDbContext dbContext) : IExperienceR
             query = query.AsNoTracking();
         }
 
-        return await query.Include(e => e.Translations).FirstOrDefaultAsync(cancellationToken);
-    }
-
-    public async Task<Experience?> GetWithTranslationAsync(Guid id, string languageCode, bool tracking = false, CancellationToken cancellationToken = default)
-    {
-        var query = experiences.Where(x => x.Id == id);
-
-        if (!tracking)
+        if (string.IsNullOrWhiteSpace(languageCode))
         {
-            query = query.AsNoTracking();
+            return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
         var experience = await query.Include(e => e.Translations.Where(t => t.LanguageCode == languageCode)).FirstOrDefaultAsync(cancellationToken);
+
+        if (experience == null || !experience.Translations.Any())
+        {
+            experience = await query.FirstOrDefaultAsync(cancellationToken);
+        }
+
+        return experience;
+    }
+
+    public async Task<Experience?> GetAsync(Guid id, string[] languageCodes, bool tracking = false, CancellationToken cancellationToken = default)
+    {
+        var query = experiences.Where(x => x.Id == id);
+
+        if (!tracking)
+        {
+            query = query.AsNoTracking();
+        }
+
+        if (languageCodes == null || !languageCodes.Any())
+        {
+            return await query.FirstOrDefaultAsync(cancellationToken);
+        }
+
+        var experience = await query.Include(e => e.Translations.Where(t => languageCodes.Contains(t.LanguageCode))).FirstOrDefaultAsync(cancellationToken);
 
         if (experience == null || !experience.Translations.Any())
         {
