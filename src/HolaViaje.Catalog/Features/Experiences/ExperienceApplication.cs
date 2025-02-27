@@ -9,7 +9,7 @@ using OneOf;
 
 namespace HolaViaje.Catalog.Features.Experiences;
 
-public class ExperienceApplication(IExperienceRepository experienceRepository, IMapper mapper)
+public class ExperienceApplication(IExperienceRepository experienceRepository, IMapper mapper) : IExperienceApplication
 {
     public async Task<OneOf<ExperienceViewModel, ErrorModel>> CreateAsync(ExperienceModel model, long userId, CancellationToken cancellationToken = default)
     {
@@ -237,6 +237,32 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         var result = await experienceRepository.UpdateAsync(experience);
 
         return mapper.Map<ExperienceViewModel>(result);
+    }
+
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> GetAsync(Guid experienceId, string languageCode, CancellationToken cancellationToken = default)
+    {
+
+        var experience = await experienceRepository.GetAsync(experienceId, languageCode, true, cancellationToken);
+
+        if (experience == null)
+        {
+            return ExperienceErrorModelHelper.ExperienceNotFoundError();
+        }
+
+        return mapper.Map<ExperienceViewModel>(experience);
+    }
+
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> GetAsync(Guid experienceId, string[] languageCodes, CancellationToken cancellationToken = default)
+    {
+
+        var experience = await experienceRepository.GetAsync(experienceId, languageCodes, true, cancellationToken);
+
+        if (experience == null)
+        {
+            return ExperienceErrorModelHelper.ExperienceNotFoundError();
+        }
+
+        return mapper.Map<ExperienceViewModel>(experience);
     }
 
     public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddPhotoAsync(Guid experienceId, string FileId, string ImageUrl, long userId, CancellationToken cancellationToken = default)

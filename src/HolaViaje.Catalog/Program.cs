@@ -1,4 +1,6 @@
+using HolaViaje.Catalog;
 using HolaViaje.Catalog.Data;
+using HolaViaje.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var devSpecificOrigins = "_devSpecificOrigins";
@@ -45,6 +47,9 @@ builder.Services.AddAuthentication(options =>
         options.TokenValidationParameters.NameClaimType = "preferred_username";
         options.TokenValidationParameters.RoleClaimType = System.Security.Claims.ClaimTypes.Role;
     });
+
+builder.Services.AddCatalogServices();
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

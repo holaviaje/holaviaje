@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HolaViaje.Global\HolaViaje.Global.csproj" />
+    <ProjectReference Include="..\HolaViaje.Infrastructure\HolaViaje.Infrastructure.csproj" />
     <ProjectReference Include="..\HolaViaje.ServiceDefaults\HolaViaje.ServiceDefaults.csproj" />
   </ItemGroup>
 
