@@ -18,6 +18,7 @@ var socialStorage = builder.AddAzureStorage("socialStorage")
     });
 
 var socialBlobs = socialStorage.AddBlobs("socialBlobs");
+var catalogBlobs = socialStorage.AddBlobs("CatalogBlobs");
 
 #endregion
 
@@ -31,6 +32,7 @@ var postgresql = builder.AddPostgres("postgresql-server", password: dbPassword);
 
 var accountDb = postgresql.AddDatabase("AccountDB");
 var socialDb = postgresql.AddDatabase("SocialDB");
+var catalogDb = postgresql.AddDatabase("CatalogDB");
 
 postgresql.WithDataVolume().WithPgAdmin();
 
@@ -47,6 +49,14 @@ builder.AddProject<HolaViaje_Social>("social-api")
     .WaitFor(socialDb)
     .WithReference(socialBlobs)
     .WaitFor(socialStorage)
+    .WithReference(kafka)
+    .WaitFor(kafka);
+
+builder.AddProject<HolaViaje_Catalog>("catalog-api")
+    .WithReference(catalogBlobs)
+    .WaitFor(catalogBlobs)
+    .WithReference(catalogDb)
+    .WaitFor(catalogDb)
     .WithReference(kafka)
     .WaitFor(kafka);
 
