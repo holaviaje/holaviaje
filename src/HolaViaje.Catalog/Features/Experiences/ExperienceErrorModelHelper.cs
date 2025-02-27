@@ -23,4 +23,9 @@ public static class ExperienceErrorModelHelper
     {
         return new ErrorModel(400, "Translation language code mismatch.");
     }
+
+    public static ErrorModel TranslationCannotBeDeletedError()
+    {
+        return new ErrorModel(400, "The experience must have at least one translation.");
+    }
 }

@@ -18,6 +18,7 @@ var socialStorage = builder.AddAzureStorage("socialStorage")
     });
 
 var socialBlobs = socialStorage.AddBlobs("socialBlobs");
+var catalogBlobs = socialStorage.AddBlobs("CatalogBlobs");
 
 #endregion
 
@@ -52,6 +53,8 @@ builder.AddProject<HolaViaje_Social>("social-api")
     .WaitFor(kafka);
 
 builder.AddProject<HolaViaje_Catalog>("catalog-api")
+    .WithReference(catalogBlobs)
+    .WaitFor(catalogBlobs)
     .WithReference(catalogDb)
     .WaitFor(catalogDb)
     .WithReference(kafka)

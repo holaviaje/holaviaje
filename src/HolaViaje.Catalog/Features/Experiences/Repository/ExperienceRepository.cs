@@ -83,4 +83,9 @@ public class ExperienceRepository(ApplicationDbContext dbContext) : IExperienceR
         await SaveChangesAsync();
         return experience;
     }
+
+    public async Task<int> CountTranslationsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Set<ExperienceTranslation>().Where(x => x.ExperienceId == id).CountAsync();
+    }
 }

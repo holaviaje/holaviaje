@@ -112,7 +112,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         translation.SetPickup(model.Pickup?.FromModel() ?? new Pickup());
     }
 
-    public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddTransalationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddTranslationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
     {
 
         if (model == null)
@@ -148,7 +148,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         return mapper.Map<ExperienceViewModel>(result);
     }
 
-    public async Task<OneOf<ExperienceViewModel, ErrorModel>> UpdateTransalationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> UpdateTranslationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
     {
 
         if (model == null)
@@ -188,7 +188,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         return mapper.Map<ExperienceViewModel>(result);
     }
 
-    public async Task<OneOf<ExperienceViewModel, ErrorModel>> DeleteTransalationAsync(Guid experienceId, string languageCode, long userId, CancellationToken cancellationToken = default)
+    public async Task<OneOf<ExperienceViewModel, ErrorModel>> DeleteTranslationAsync(Guid experienceId, string languageCode, long userId, CancellationToken cancellationToken = default)
     {
 
         var experience = await experienceRepository.GetAsync(experienceId, languageCode, true, cancellationToken);
@@ -201,6 +201,13 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         if (!experience.Translations.Any())
         {
             return ExperienceErrorModelHelper.TranslationMissingError();
+        }
+
+        var translationsCount = await experienceRepository.CountTranslationsAsync(experienceId, cancellationToken);
+
+        if (translationsCount <= 1)
+        {
+            return ExperienceErrorModelHelper.TranslationCannotBeDeletedError();
         }
 
         var translation = experience.Translations.FirstOrDefault();

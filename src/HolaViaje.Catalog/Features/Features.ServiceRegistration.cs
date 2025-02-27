@@ -4,8 +4,9 @@ namespace HolaViaje.Catalog.Features;
 
 public static class ServiceRegistration
 {
-    public static IServiceCollection AddCatalogFeatures(this IServiceCollection services)
+    public static IServiceCollection AddAllFeatures(this IServiceCollection services)
     {
+        services.AddAutoMapper(typeof(ServiceRegistration).Assembly);
         services.AddExperiencesFeature();
         return services;
     }

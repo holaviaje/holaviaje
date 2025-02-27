@@ -6,7 +6,7 @@ public static class ServiceRegistration
 {
     public static IServiceCollection AddCatalogServices(this IServiceCollection services)
     {
-        services.AddCatalogFeatures();
+        services.AddAllFeatures();
         return services;
     }
 }

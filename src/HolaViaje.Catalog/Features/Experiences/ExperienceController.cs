@@ -95,7 +95,7 @@ public class ExperienceController(IExperienceApplication experienceApplication, 
             return BadRequest(new ErrorModel(400, "Invalid experience translation model."));
         }
 
-        var result = await experienceApplication.AddTransalationAsync(experienceId, model, UserIdentity, cancellationToken);
+        var result = await experienceApplication.AddTranslationAsync(experienceId, model, UserIdentity, cancellationToken);
 
         return result.Match<IActionResult>(
             experience => Ok(experience),
@@ -120,7 +120,7 @@ public class ExperienceController(IExperienceApplication experienceApplication, 
             return BadRequest(new ErrorModel(400, "Invalid experience model."));
         }
 
-        var result = await experienceApplication.UpdateTransalationAsync(experienceId, model, UserIdentity, cancellationToken);
+        var result = await experienceApplication.UpdateTranslationAsync(experienceId, model, UserIdentity, cancellationToken);
 
         return result.Match<IActionResult>(
             experience => Ok(experience),
@@ -135,14 +135,14 @@ public class ExperienceController(IExperienceApplication experienceApplication, 
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteTranslationAsync(Guid experienceId, string languageCode, CancellationToken cancellationToken = default)
     {
-        var result = await experienceApplication.DeleteTransalationAsync(experienceId, languageCode, UserIdentity, cancellationToken);
+        var result = await experienceApplication.DeleteTranslationAsync(experienceId, languageCode, UserIdentity, cancellationToken);
 
         return result.Match<IActionResult>(
             experience => NoContent(),
             error => BadRequest(error));
     }
 
-    [HttpGet("{experienceId}/translatations/{languageCode}")]
+    [HttpGet("{experienceId}/translations/{languageCode}")]
     [ProducesResponseType(typeof(ExperienceViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
