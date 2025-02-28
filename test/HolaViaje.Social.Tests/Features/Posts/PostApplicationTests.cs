@@ -29,21 +29,11 @@ namespace HolaViaje.Social.Tests.Features.Posts
         }
 
         [TestMethod]
-        public async Task CreateAsync_ShouldReturnError_WhenPageIdIsGreaterThanZero()
-        {
-            var model = new PostModel { PageId = 1 };
-            var result = await _postApplication.CreateAsync(model, 1);
-
-            Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPublishOnPage(), result.AsT1);
-        }
-
-        [TestMethod]
         public async Task CreateAsync_ShouldReturnPostViewModel()
         {
             // Arrange
             var postModel = new PostModel { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var postViewModel = new PostViewModel { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public, Control = new() };
 
             _postRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Post>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
@@ -65,7 +55,7 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.UpdateAsync(1, new PostBasicModel(), 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
@@ -73,7 +63,7 @@ namespace HolaViaje.Social.Tests.Features.Posts
         {
             // Arrange
             var postBasicModel = new PostBasicModel { Content = "Updated content", Visibility = Visibility.Public };
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var postViewModel = new PostViewModel { Content = "Updated content", Type = PostType.Event, Visibility = Visibility.Public, Control = new() };
 
             _postRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<long>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
@@ -96,14 +86,14 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.PublishAsync(1, 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
         public async Task PublishAsync_ShouldReturnPostViewModel()
         {
             // Arrange
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var postViewModel = new PostViewModel { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public, Control = new() };
 
             _postRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<long>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
@@ -126,7 +116,7 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.CreateUploadLinkAsync(1, new UploadLinkModel("hello.png", 1024), 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
@@ -135,7 +125,7 @@ namespace HolaViaje.Social.Tests.Features.Posts
             // Arrange
             var userId = 1;
             var uploadLinkModel = new UploadLinkModel("hello.png", 1024);
-            var post = new Post(userId, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(userId) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var mediaFileModel = new MediaFileModel("test123", "test.jpg", "application/jpg", "localhost", false);
             var blobLinkModel = new BlobLinkModel("test123", "test.jpg", DateTimeOffset.Now.AddDays(1));
 
@@ -160,14 +150,14 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.MarkAsUploadedAsync(1, "fileId", 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
         public async Task MarkAsUploadedAsync_ShouldReturnMediaFileModel()
         {
             // Arrange
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             post.AddMediaFile(new MediaFile("fileId", "test.jpg", 1024, "application/jpg", MediaFile.ImageContainerName, "localhost"));
 
             var mediaFileModel = new MediaFileModel("test123", "test.jpg", "application/jpg", "localhost", true);
@@ -192,14 +182,14 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.DeleteMediaFileAsync(1, "fileId", 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
         public async Task DeleteMediaFileAsync_ShouldReturnMediaFileModel()
         {
             // Arrange
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             post.AddMediaFile(new MediaFile("fileId", "test.jpg", 1024, "application/jpg", MediaFile.ImageContainerName, "localhost"));
             var mediaFileModel = new MediaFileModel("test123", "test.jpg", "application/jpg", "localhost", true);
 
@@ -223,14 +213,14 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.DeleteAsync(1, 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
         public async Task DeleteAsync_ShouldReturnPostViewModel()
         {
             // Arrange
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var postViewModel = new PostViewModel { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public, Control = new() };
 
             _postRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<long>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).ReturnsAsync(post);
@@ -253,14 +243,14 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var result = await _postApplication.GetAsync(1, 1);
 
             Assert.IsTrue(result.IsT1);
-            Assert.AreEqual(PostErrorModelHelper.ErrorPostNotFound(), result.AsT1);
+            Assert.AreEqual(PostErrorModelHelper.PostNotFoundError(), result.AsT1);
         }
 
         [TestMethod]
         public async Task GetAsync_ShouldReturnPostViewModel()
         {
             // Arrange
-            var post = new Post(1, 0) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
+            var post = new Post(1) { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public };
             var postViewModel = new PostViewModel { Content = "Test content", Type = PostType.Event, Visibility = Visibility.Public, Control = new() };
 
             _postRepositoryMock.Setup(repo => repo.GetAsync(It.IsAny<long>(), false, It.IsAny<CancellationToken>())).ReturnsAsync(post);

@@ -16,11 +16,10 @@ namespace HolaViaje.Social.Tests.Features.Posts
         }
 
         [TestMethod]
-        public void Constructor_WithParameters_ShouldSetUserIdAndPageId()
+        public void Constructor_WithParameters_ShouldSetUserId()
         {
-            var post = new Post(1, 2);
+            var post = new Post(1);
             Assert.AreEqual(1, post.UserId);
-            Assert.AreEqual(2, post.PageId);
         }
 
         [TestMethod]
@@ -99,15 +98,6 @@ namespace HolaViaje.Social.Tests.Features.Posts
             var post = new Post { UserId = 1 };
             Assert.IsTrue(post.IsOwner(1));
             Assert.IsFalse(post.IsOwner(2));
-        }
-
-        [TestMethod]
-        public void IsAssociatedWithPage_ShouldReturnTrueIfAssociated()
-        {
-            var post = new Post { PageId = 1 };
-            Assert.IsTrue(post.IsAssociatedWithPage());
-            post.PageId = 0;
-            Assert.IsFalse(post.IsAssociatedWithPage());
         }
 
         [TestMethod]

@@ -43,9 +43,6 @@ namespace HolaViaje.Social.Data.Migrations
                     b.Property<bool>("IsHtmlContent")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("PageId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 

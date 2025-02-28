@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -23,7 +22,6 @@ namespace HolaViaje.Social.Data.Migrations
                     Content = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: true),
                     IsHtmlContent = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PageId = table.Column<int>(type: "integer", nullable: false),
                     Visibility = table.Column<int>(type: "integer", nullable: false),
                     Country = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     State = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),

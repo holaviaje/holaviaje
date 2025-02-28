@@ -13,11 +13,10 @@ public class Post : EntityBase
         };
     }
 
-    public Post(long userId, int pageId)
+    public Post(long userId)
         : this()
     {
         UserId = userId;
-        PageId = pageId;
     }
 
     /// <summary>
@@ -44,10 +43,6 @@ public class Post : EntityBase
     /// Gets or sets the user identifier.
     /// </summary>
     public long UserId { get; set; }
-    /// <summary>
-    /// Gets or sets the page identifier.
-    /// </summary>
-    public int PageId { get; set; } = 0;
     /// <summary>
     /// Gets or sets the visibility settings of the post.
     /// </summary>
@@ -190,12 +185,6 @@ public class Post : EntityBase
     /// <param name="userId">User Identifier.</param>
     /// <returns>True if is the owner, else false.</returns>
     public bool IsOwner(long userId) => UserId == userId;
-
-    /// <summary>
-    /// Determines whether the post is associated with a page.
-    /// </summary>
-    /// <returns></returns>
-    public bool IsAssociatedWithPage() => PageId > 0;
 
     /// <summary>
     /// Gets if the post can add a media file.

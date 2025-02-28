@@ -132,12 +132,12 @@ public class PostController(IPostApplication postApplication) : ControllerCore
     }
 
     [Authorize]
-    [HttpDelete("{postId}/")]
+    [HttpDelete("{postId}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteAsyn(long postId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> DeleteAsync(long postId, CancellationToken cancellationToken = default)
     {
         var result = await postApplication.DeleteAsync(postId, UserIdentity, cancellationToken);
 
