@@ -34,6 +34,7 @@ public interface IPostApplication
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<OneOf<PostViewModel, ErrorModel>> PublishAsync(long postId, long userId, CancellationToken cancellationToken = default);
+    Task<OneOf<MediaFileModel, ErrorModel>> UploadMediaFileAsync(long postId, UploadMediaFileModel model, long userId, CancellationToken cancellationToken = default);
     /// <summary>
     /// Creates an upload link for a media file.
     /// </summary>

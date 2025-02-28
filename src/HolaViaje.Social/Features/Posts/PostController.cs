@@ -2,6 +2,7 @@
 using HolaViaje.Social.Features.Posts.Models;
 using HolaViaje.Social.Features.Profiles.Models;
 using HolaViaje.Social.Shared.Models;
+using HolaViaje.Social.Validators;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,8 +68,32 @@ public class PostController(IPostApplication postApplication) : ControllerCore
     }
 
     [Authorize]
+    [HttpPost("{postId}/files/upload")]
+    [ProducesResponseType(typeof(MediaFileModel), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UploadMediaFileAsync(long postId, IFormFile mediaFile, CancellationToken cancellationToken = default)
+    {
+        if (mediaFile is null)
+            return BadRequest(new ErrorModel(400, "File is null"));
+
+        var (success, message) = FileValidator.Validate(Path.GetExtension(mediaFile.FileName), mediaFile.Length, MediaFile.ValidExtensions, MediaFile.MaxDirectUploadSize);
+
+        if (!success)
+            return BadRequest(new ErrorModel(400, message));
+
+        var model = new UploadMediaFileModel(mediaFile.FileName, mediaFile.ContentType, mediaFile.Length, mediaFile.OpenReadStream());
+        var result = await postApplication.UploadMediaFileAsync(postId, model, UserIdentity, cancellationToken);
+
+        return result.Match<IActionResult>(
+            file => Created(string.Empty, file),
+            error => BadRequest(error));
+    }
+
+    [Authorize]
     [HttpPost("{postId}/files/uploadLink")]
-    [ProducesResponseType(typeof(MediaFileModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(MediaFileModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -79,10 +104,17 @@ public class PostController(IPostApplication postApplication) : ControllerCore
             return BadRequest(new ErrorModel(400, "Invalid post model."));
         }
 
+        var extension = Path.GetExtension(model.FileName);
+        var maxFileSize = MediaFile.ImageValidExtensions.Contains(extension) ? MediaFile.ImageMaxSize : MediaFile.VideoMaxSize;
+        var (success, message) = FileValidator.Validate(extension, model.FileSize, MediaFile.ValidExtensions, maxFileSize);
+
+        if (!success)
+            return BadRequest(new ErrorModel(400, message));
+
         var result = await postApplication.CreateUploadLinkAsync(postId, model, UserIdentity, cancellationToken);
 
         return result.Match<IActionResult>(
-            post => Ok(post),
+            file => Created(string.Empty, file),
             error => BadRequest(error));
     }
 
@@ -103,7 +135,7 @@ public class PostController(IPostApplication postApplication) : ControllerCore
 
     [Authorize]
     [HttpPost("{postId}/files/{fileId}/uploaded")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -112,7 +144,7 @@ public class PostController(IPostApplication postApplication) : ControllerCore
         var result = await postApplication.MarkAsUploadedAsync(postId, fileId, UserIdentity, cancellationToken);
 
         return result.Match<IActionResult>(
-            file => NoContent(),
+            file => Ok(),
             error => BadRequest(error));
     }
 

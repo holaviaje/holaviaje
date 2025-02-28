@@ -113,6 +113,40 @@ public class PostApplication(IPostRepository postRepository,
 
     }
 
+    public async Task<OneOf<MediaFileModel, ErrorModel>> UploadMediaFileAsync(long postId, UploadMediaFileModel model, long userId, CancellationToken cancellationToken = default)
+    {
+        var post = await postRepository.GetAsync(postId, true);
+
+        if (post is null || post.IsDeleted())
+        {
+            return PostErrorModelHelper.PostNotFoundError();
+        }
+
+        if (!post.IsOwner(userId))
+        {
+            return PostErrorModelHelper.UpdatePostPermissionError();
+        }
+
+        if (!post.CanAddMediaFile())
+        {
+            return PostErrorModelHelper.MaxFilesQuantityReachedError();
+        }
+
+        var extension = Path.GetExtension(model.FileName);
+        var fileId = Guid.NewGuid().ToString("N");
+        var fileName = $"{fileId}{extension}";
+        var containerName = GetContainerName(extension);
+        var accessUrl = await blobRepository.UploadAsync(containerName, fileName, model.FileStream);
+        var mediaFile = new MediaFile(fileId, model.FileName, model.FileSize, GetContentType(extension), containerName, accessUrl);
+
+        post.AddMediaFile(mediaFile);
+        post.UpdateLastModified();
+
+        var dbEntity = await postRepository.UpdateAsync(post);
+        return mapper.Map<MediaFileModel>(dbEntity);
+
+    }
+
     public async Task<OneOf<MediaFileModel, ErrorModel>> CreateUploadLinkAsync(long postId, UploadLinkModel model, long userId, CancellationToken cancellationToken = default)
     {
         var post = await postRepository.GetAsync(postId, true);

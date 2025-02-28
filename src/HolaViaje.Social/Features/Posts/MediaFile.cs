@@ -14,4 +14,7 @@ public record MediaFile(string FileId, string FileName, long FileSize, string Co
     public static readonly string VideoContainerName = "post-videos-1";
     public static readonly long VideoMaxSize = 1 * 1024 * 1024 * 1024;
     public static readonly string[] VideoValidExtensions = [".mp4", ".mov"];
+
+    public static readonly int MaxDirectUploadSize = 4 * 1024 * 1024;
+    public static readonly string[] ValidExtensions = ImageValidExtensions.Concat(VideoValidExtensions).ToArray();
 }
