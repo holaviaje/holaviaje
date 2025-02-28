@@ -5,7 +5,6 @@ using HolaViaje.Infrastructure.Messaging;
 using HolaViaje.Social.Features.Posts.Events;
 using HolaViaje.Social.Features.Posts.Models;
 using HolaViaje.Social.Features.Posts.Repository;
-using HolaViaje.Social.Shared;
 using HolaViaje.Social.Shared.Models;
 using OneOf;
 using System.Text.RegularExpressions;
@@ -29,24 +28,14 @@ public class PostApplication(IPostRepository postRepository,
 
     public async Task<OneOf<PostViewModel, ErrorModel>> CreateAsync(PostModel model, long userId, CancellationToken cancellationToken = default)
     {
-        if (model.PageId > 0)
+        var post = new Post(userId)
         {
-            // TODO: check if the user has permission to post on the page
-            return PostErrorModelHelper.ErrorPublishOnPage();
-        }
-
-        var (htmlContent, content) = ProcessContent(model.Content ?? string.Empty);
-
-        var post = new Post(userId, model.PageId)
-        {
-            Content = content,
-            IsHtmlContent = htmlContent,
             Type = model.Type,
-            Visibility = model.PageId > 0 ? Visibility.Public : model.Visibility,
             IsDraft = model.IsDraft,
             Status = PostStatus.Unpublished,
-            EditMode = model.KeepOpen
         };
+
+        ApplyPostUpdates(post, model);
 
         var dbEntity = await postRepository.CreateAsync(post);
         return mapper.Map<PostViewModel>(dbEntity);
@@ -59,44 +48,33 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
-        if (post.Visibility != model.Visibility)
-        {
-            if (post.IsAssociatedWithPage()) // page posts only support public visibility
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-
-            post.Visibility = model.Visibility;
-        }
-
-        var (htmlContent, content) = ProcessContent(model.Content ?? string.Empty);
-
-        post.Content = content;
-        post.IsHtmlContent = htmlContent;
-        post.EditMode = model.KeepOpen;
-        post.SetPlace(model.Place?.FromModel() ?? new());
-        post.SetMembers(model.Members.FromModel());
-        post.UpdateLastModified();
+        ApplyPostUpdates(post, model);
 
         var dbEntity = await postRepository.UpdateAsync(post);
         return mapper.Map<PostViewModel>(dbEntity);
 
+    }
+
+    private void ApplyPostUpdates(Post post, PostBasicModel model)
+    {
+        var (htmlContent, content) = ProcessContent(model.Content ?? string.Empty);
+
+        post.Content = content;
+        post.IsHtmlContent = htmlContent;
+        post.Visibility = model.Visibility;
+        post.EditMode = model.KeepOpen;
+
+        post.SetPlace(model.Place?.FromModel() ?? new());
+        post.SetMembers(model.Members.FromModel());
+        post.UpdateLastModified();
     }
 
     public async Task<OneOf<PostViewModel, ErrorModel>> PublishAsync(long postId, long userId, CancellationToken cancellationToken = default)
@@ -105,25 +83,17 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
         if (post.UploadsPending())
         {
-            return PostErrorModelHelper.ErrorUploadsPending();
+            return PostErrorModelHelper.UploadsPendingError();
         }
 
         post.Publish();
@@ -149,25 +119,17 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
         if (!post.CanAddMediaFile())
         {
-            return PostErrorModelHelper.ErrorMaxFilesQuantityReached();
+            return PostErrorModelHelper.MaxFilesQuantityReachedError();
         }
 
         // Is always true because the media file is not uploaded yet.
@@ -194,27 +156,19 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
         var mediaFile = post.GetMediaFile(fileId);
 
         if (mediaFile is null)
         {
-            return PostErrorModelHelper.ErrorMediaFileNotFound();
+            return PostErrorModelHelper.MediaFileNotFoundError();
         }
 
         mediaFile.Uploaded = true;
@@ -231,27 +185,19 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
         var mediaFile = post.GetMediaFile(fileId);
 
         if (mediaFile is null)
         {
-            return PostErrorModelHelper.ErrorMediaFileNotFound();
+            return PostErrorModelHelper.MediaFileNotFoundError();
         }
 
         await blobRepository.DeleteAsync(mediaFile.ContainerName, mediaFile.FileName);
@@ -270,20 +216,12 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsOwner(userId))
         {
-            if (post.PageId > 0)
-            {
-                // TODO: check if the user has permission to update post on the page
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
-            else
-            {
-                return PostErrorModelHelper.ErrorUpdatePost();
-            }
+            return PostErrorModelHelper.UpdatePostPermissionError();
         }
 
         foreach (var mediaFile in post.MediaFiles)
@@ -313,15 +251,12 @@ public class PostApplication(IPostRepository postRepository,
 
         if (post is null || post.IsDeleted())
         {
-            return PostErrorModelHelper.ErrorPostNotFound();
+            return PostErrorModelHelper.PostNotFoundError();
         }
 
         if (!post.IsVisibleFor(userId))
         {
-            if (!post.IsAssociatedWithPage())
-            {
-                return PostErrorModelHelper.ErrorAccessDenied();
-            }
+            return PostErrorModelHelper.AccessDeniedError();
         }
 
         return mapper.Map<PostViewModel>(post);
