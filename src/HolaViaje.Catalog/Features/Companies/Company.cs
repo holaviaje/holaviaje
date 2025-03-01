@@ -97,11 +97,21 @@ public class Company
     /// </summary>
     public EntityControl Control { get; set; } = new();
 
+    /// <summary>
+    /// Determines whether the user is the owner of the company.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public bool IsOwner(long userId)
     {
         return UserId == userId;
     }
 
+    /// <summary>
+    /// Determines whether the user is an admin of the company.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     public bool IsAdmin(long userId)
     {
         if (IsOwner(userId))
@@ -148,6 +158,10 @@ public class Company
     /// <returns></returns>
     public bool IsDeleted() => Control.IsDeleted;
 
+    /// <summary>
+    /// Sets the booking information of the company.
+    /// </summary>
+    /// <param name="bookInfo"></param>
     public void SetBookInfo(BookInfo? bookInfo)
     {
         if (BookInfo == bookInfo) return;
@@ -155,6 +169,10 @@ public class Company
         UpdateLastModified();
     }
 
+    /// <summary>
+    /// Sets the managers of the company.
+    /// </summary>
+    /// <param name="managers"></param>
     public void SetManagers(IEnumerable<Manager> managers)
     {
         var managersToRemove = Managers.Where(m => !managers.Any(x => x.UserId == m.UserId)).ToList();
