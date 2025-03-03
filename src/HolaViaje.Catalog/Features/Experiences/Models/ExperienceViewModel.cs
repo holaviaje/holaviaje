@@ -11,7 +11,6 @@ public record ExperienceViewModel
     public ICollection<ExperienceTranslationViewModel> Translations { get; set; } = [];
     public CancellationPolicy CancellationPolicy { get; set; }
     public DurationModel? Duration { get; set; }
-    public bool PickupAvailable { get; set; }
     public bool InstantTicketDelivery { get; set; }
     public bool MobileTicket { get; set; }
     public bool WheelchairAccessible { get; set; }

@@ -11,7 +11,6 @@ public class Experience
     public ICollection<ExperienceTranslation> Translations { get; set; } = [];
     public CancellationPolicy CancellationPolicy { get; set; }
     public Duration Duration { get; set; } = new();
-    public bool PickupAvailable { get; set; }
     public bool InstantTicketDelivery { get; set; }
     public bool MobileTicket { get; set; }
     public bool WheelchairAccessible { get; set; }
