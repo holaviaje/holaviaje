@@ -38,7 +38,7 @@ internal class ExperienceConfiguration : IEntityTypeConfiguration<Experience>
             x.ToTable("ExperiencePhotos");
             x.WithOwner().HasForeignKey("OwnerId");
             x.HasKey("FileId");
-            x.Property(x => x.FileId).HasMaxLength(50);
+            x.Property(x => x.FileId).HasMaxLength(38);
             x.Property(x => x.ImageUrl).HasMaxLength(2000);
         });
     }
