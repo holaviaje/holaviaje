@@ -72,7 +72,7 @@ public class CompanyController(ICompanyApplication companyApplication) : Control
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateBookInfoAsync(Guid companyId, BookInfoModel? model, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> UpdateBookInfoAsync(Guid companyId, BookInfoModel model, CancellationToken cancellationToken = default)
     {
         var result = await companyApplication.UpdateBookInfoAsync(companyId, model, UserIdentity, cancellationToken);
 
@@ -87,7 +87,7 @@ public class CompanyController(ICompanyApplication companyApplication) : Control
     [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateBookInfoAsync(Guid companyId, List<ManagerModel> models, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> UpdateManagersAsync(Guid companyId, List<ManagerModel> models, CancellationToken cancellationToken = default)
     {
         var result = await companyApplication.UpdateManagersAsync(companyId, models, UserIdentity, cancellationToken);
 

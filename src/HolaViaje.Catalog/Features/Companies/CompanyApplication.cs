@@ -64,7 +64,7 @@ public class CompanyApplication(ICompanyRepository companyRepository, IMapper ma
         return mapper.Map<CompanyViewModel>(dbEntity);
     }
 
-    public async Task<OneOf<CompanyViewModel, ErrorModel>> UpdateBookInfoAsync(Guid companyId, BookInfoModel? model, long userId, CancellationToken cancellationToken)
+    public async Task<OneOf<CompanyViewModel, ErrorModel>> UpdateBookInfoAsync(Guid companyId, BookInfoModel model, long userId, CancellationToken cancellationToken)
     {
         var company = await companyRepository.GetAsync(companyId, true, cancellationToken);
 
@@ -78,7 +78,7 @@ public class CompanyApplication(ICompanyRepository companyRepository, IMapper ma
             return CompanyErrorModelHelper.UnauthorizedError();
         }
 
-        company.SetBookInfo(model?.FromModel());
+        company.SetBookInfo(model.FromModel());
 
         var dbEntity = await companyRepository.UpdateAsync(company, cancellationToken);
         return mapper.Map<CompanyViewModel>(dbEntity);

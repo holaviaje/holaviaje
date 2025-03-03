@@ -79,7 +79,7 @@ public class Company
     /// <summary>
     /// Booking information of the company.
     /// </summary>
-    public BookInfo? BookInfo { get; set; }
+    public BookInfo BookInfo { get; set; }
     /// <summary>
     /// Managers of the company.
     /// </summary>
@@ -95,7 +95,7 @@ public class Company
     /// <summary>
     /// Control information of the company.
     /// </summary>
-    public EntityControl Control { get; set; } = new();
+    public EntityControl Control { get; set; }
 
     /// <summary>
     /// Determines whether the user is the owner of the company.
@@ -162,7 +162,7 @@ public class Company
     /// Sets the booking information of the company.
     /// </summary>
     /// <param name="bookInfo"></param>
-    public void SetBookInfo(BookInfo? bookInfo)
+    public void SetBookInfo(BookInfo bookInfo)
     {
         if (BookInfo == bookInfo) return;
         BookInfo = bookInfo;

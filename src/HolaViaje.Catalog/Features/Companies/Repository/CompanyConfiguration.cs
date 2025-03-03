@@ -25,7 +25,7 @@ internal class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.Property(x => x.RegisteredIn).HasMaxLength(100);
         builder.Property(x => x.VatId).HasMaxLength(20);
 
-        builder.OwnsOne(x => x.BookInfo);
+        builder.ComplexProperty(x => x.BookInfo);
 
         builder.OwnsMany(x => x.Managers, x =>
         {
@@ -33,6 +33,14 @@ internal class CompanyConfiguration : IEntityTypeConfiguration<Company>
             x.WithOwner().HasForeignKey("OwnerId");
             x.Property<int>("Id");
             x.HasKey("Id");
+        });
+
+        builder.ComplexProperty(x => x.Control, control =>
+        {
+            control.Property(c => c.CreatedAt).HasColumnName("CreatedAt");
+            control.Property(c => c.LastModifiedAt).HasColumnName("LastModifiedAt");
+            control.Property(c => c.DeletedAt).HasColumnName("DeletedAt");
+            control.Property(c => c.IsDeleted).HasColumnName("IsDeleted");
         });
     }
 }
