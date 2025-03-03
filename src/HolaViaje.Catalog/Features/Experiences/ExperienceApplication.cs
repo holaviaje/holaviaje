@@ -84,7 +84,6 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
     private void ApplyExperienceUpdates(Experience experience, ExperienceModel model)
     {
         experience.CancellationPolicy = model.CancellationPolicy.FromModel();
-        experience.PickupAvailable = model.PickupAvailable;
         experience.InstantTicketDelivery = model.InstantTicketDelivery;
         experience.MobileTicket = model.MobileTicket;
         experience.WheelchairAccessible = model.WheelchairAccessible;
