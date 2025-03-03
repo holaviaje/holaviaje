@@ -23,69 +23,111 @@ internal class ExperienceTransalationConfiguration : IEntityTypeConfiguration<Ex
         {
             x.ToTable("ExperienceServices");
             x.WithOwner().HasForeignKey("OwnerId");
-            x.Property<int>("Id");
-            x.HasKey("Id");
+            x.HasKey("RecordId");
             x.Property(x => x.Title).HasMaxLength(100);
         });
 
-        builder.OwnsOne(x => x.Pickup, x =>
+        builder.OwnsMany(x => x.PickupPoints, x =>
         {
-            x.Property(x => x.Address1).HasMaxLength(100);
-            x.Property(x => x.Address2).HasMaxLength(100);
-            x.OwnsOne(x => x.Place, p =>
-            {
-                p.Property(p => p.Country).HasMaxLength(100);
-                p.Property(p => p.State).HasMaxLength(100);
-                p.Property(p => p.City).HasMaxLength(100);
-                p.OwnsOne(p => p.Location, l =>
-                {
-                    l.Property(p => p.Latitude).HasMaxLength(30);
-                    l.Property(p => p.Longitude).HasMaxLength(30);
-                });
-            });
-        });
-
-        builder.OwnsOne(x => x.Place, x =>
-        {
+            x.ToTable("ExperiencePickupPoints");
+            x.WithOwner().HasForeignKey("OwnerId");
+            x.HasKey("RecordId");
+            x.Property(x => x.Name).HasMaxLength(100);
+            x.Property(x => x.Address).HasMaxLength(200);
             x.Property(x => x.Country).HasMaxLength(100);
             x.Property(x => x.State).HasMaxLength(100);
             x.Property(x => x.City).HasMaxLength(100);
-            x.OwnsOne(x => x.Location, l =>
-            {
-                l.Property(p => p.Latitude).HasMaxLength(30);
-                l.Property(p => p.Longitude).HasMaxLength(30);
-            });
+            x.Property(x => x.ZipCode).HasMaxLength(20);
+            x.Property(x => x.Latitude).HasMaxLength(50);
+            x.Property(x => x.Longitude).HasMaxLength(50);
+            x.Property(x => x.Time).HasMaxLength(500);
+            x.Property(x => x.Details).HasMaxLength(500);
+        });
+
+        builder.OwnsMany(x => x.MeetingPoints, x =>
+        {
+            x.ToTable("ExperienceMeetingPoints");
+            x.WithOwner().HasForeignKey("OwnerId");
+            x.HasKey("RecordId");
+            x.Property(x => x.Name).HasMaxLength(100);
+            x.Property(x => x.Address).HasMaxLength(200);
+            x.Property(x => x.Country).HasMaxLength(100);
+            x.Property(x => x.State).HasMaxLength(100);
+            x.Property(x => x.City).HasMaxLength(100);
+            x.Property(x => x.ZipCode).HasMaxLength(20);
+            x.Property(x => x.Latitude).HasMaxLength(50);
+            x.Property(x => x.Longitude).HasMaxLength(50);
+            x.Property(x => x.Time).HasMaxLength(500);
+            x.Property(x => x.Details).HasMaxLength(500);
+        });
+
+        builder.OwnsOne(x => x.TicketRedemptionPoint, x =>
+        {
+            x.Property(x => x.Name).HasMaxLength(100);
+            x.Property(x => x.Address).HasMaxLength(200);
+            x.Property(x => x.Country).HasMaxLength(100);
+            x.Property(x => x.State).HasMaxLength(100);
+            x.Property(x => x.City).HasMaxLength(100);
+            x.Property(x => x.ZipCode).HasMaxLength(20);
+            x.Property(x => x.Latitude).HasMaxLength(50);
+            x.Property(x => x.Longitude).HasMaxLength(50);
+            x.Property(x => x.Time).HasMaxLength(500);
+            x.Property(x => x.Details).HasMaxLength(500);
+        });
+
+        builder.OwnsOne(x => x.EndPoint, x =>
+        {
+            x.Property(x => x.Name).HasMaxLength(100);
+            x.Property(x => x.Address).HasMaxLength(200);
+            x.Property(x => x.Country).HasMaxLength(100);
+            x.Property(x => x.State).HasMaxLength(100);
+            x.Property(x => x.City).HasMaxLength(100);
+            x.Property(x => x.ZipCode).HasMaxLength(20);
+            x.Property(x => x.Latitude).HasMaxLength(50);
+            x.Property(x => x.Longitude).HasMaxLength(50);
+            x.Property(x => x.Time).HasMaxLength(500);
+            x.Property(x => x.Details).HasMaxLength(500);
         });
 
         builder.OwnsMany(x => x.Stops, x =>
         {
             x.ToTable("ExperienceStops");
             x.WithOwner().HasForeignKey("OwnerId");
-            x.Property<int>("Id");
-            x.HasKey("Id");
+            x.HasKey("RecordId");
             x.Property(x => x.Title).HasMaxLength(100);
-            x.Property(x => x.Description).HasMaxLength(500);
-            x.Property(x => x.AdditionalInfo).HasMaxLength(100);
-            x.OwnsOne(x => x.Place, p =>
+            x.Property(x => x.Description).HasMaxLength(1000);
+            x.OwnsOne(x => x.Place, x =>
             {
-                p.Property(p => p.Country).HasMaxLength(100);
-                p.Property(p => p.State).HasMaxLength(100);
-                p.Property(p => p.City).HasMaxLength(100);
-                p.OwnsOne(p => p.Location, l =>
-                {
-                    l.Property(p => p.Latitude).HasMaxLength(30);
-                    l.Property(p => p.Longitude).HasMaxLength(30);
-                });
+                x.Property(x => x.Name).HasMaxLength(100);
+                x.Property(x => x.Address).HasMaxLength(200);
+                x.Property(x => x.Country).HasMaxLength(100);
+                x.Property(x => x.State).HasMaxLength(100);
+                x.Property(x => x.City).HasMaxLength(100);
+                x.Property(x => x.ZipCode).HasMaxLength(20);
+                x.Property(x => x.Latitude).HasMaxLength(50);
+                x.Property(x => x.Longitude).HasMaxLength(50);
             });
+            x.OwnsOne(x => x.Duration);
         });
 
         builder.OwnsMany(x => x.AdditionalInfos, x =>
         {
             x.ToTable("ExperienceAdditionalInfos");
             x.WithOwner().HasForeignKey("OwnerId");
-            x.Property<int>("Id");
-            x.HasKey("Id");
+            x.HasKey("RecordId");
             x.Property(x => x.Description).HasMaxLength(500);
+        });
+
+        builder.OwnsOne(x => x.Place, x =>
+        {
+            x.Property(x => x.Name).HasMaxLength(100);
+            x.Property(x => x.Address).HasMaxLength(200);
+            x.Property(x => x.Country).HasMaxLength(100);
+            x.Property(x => x.State).HasMaxLength(100);
+            x.Property(x => x.City).HasMaxLength(100);
+            x.Property(x => x.ZipCode).HasMaxLength(20);
+            x.Property(x => x.Latitude).HasMaxLength(50);
+            x.Property(x => x.Longitude).HasMaxLength(50);
         });
 
         builder.HasIndex(x => new { x.ExperienceId, x.LanguageCode }).IsUnique();

@@ -37,7 +37,9 @@ public class ExperienceRepository(ApplicationDbContext dbContext) : IExperienceR
             return await query.FirstOrDefaultAsync(cancellationToken);
         }
 
-        var experience = await query.Include(e => e.Translations.Where(t => t.LanguageCode == languageCode)).FirstOrDefaultAsync(cancellationToken);
+        var experience = await query
+            .Include(e => e.Translations.Where(t => t.LanguageCode == languageCode))
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (experience == null || !experience.Translations.Any())
         {
@@ -47,7 +49,7 @@ public class ExperienceRepository(ApplicationDbContext dbContext) : IExperienceR
         return experience;
     }
 
-    public async Task<Experience?> GetAsync(Guid id, string[] languageCodes, bool tracking = false, CancellationToken cancellationToken = default)
+    public async Task<Experience?> GetAsync(Guid id, string?[] languageCodes, bool tracking = false, CancellationToken cancellationToken = default)
     {
         var query = experiences.Where(x => x.Id == id);
 

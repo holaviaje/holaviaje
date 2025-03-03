@@ -3,6 +3,10 @@
 public enum CancellationPolicyType
 {
     /// <summary>
+    /// No cancellation policy, the user will not be able to cancel the reservation.
+    /// </summary>
+    None,
+    /// <summary>
     /// Free cancellation, no charge will be made if the user cancels 24h before.
     /// </summary>
     FreeCancellation,

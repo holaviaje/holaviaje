@@ -3,6 +3,7 @@ using HolaViaje.Catalog.Features.Experiences.Models;
 using HolaViaje.Catalog.Features.Experiences.Repository;
 using HolaViaje.Catalog.Shared;
 using HolaViaje.Catalog.Shared.Models;
+using HolaViaje.Global.Helpers;
 using HolaViaje.Global.Shared;
 using HolaViaje.Global.Shared.Models;
 using OneOf;
@@ -19,14 +20,15 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
             return ExperienceErrorModelHelper.TranslationMissingError();
         }
 
-        if (!IsLanguageCodeUnique(model.Translations.Select(t => t.LanguageCode).ToArray()))
+        var languageCodes = model.Translations.Select(t => t.LanguageCode).ToHashSet();
+        if (!IsLanguageCodeUnique(languageCodes))
         {
             return ExperienceErrorModelHelper.TranslationLanguageCodeMismatchError();
         }
 
         var experience = new Experience
         {
-            PageId = model.PageId,
+            CompanyId = model.PageId,
         };
 
         ApplyExperienceUpdates(experience, model);
@@ -36,7 +38,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
             var translation = new ExperienceTranslation
             {
                 Experience = experience,
-                LanguageCode = translationModel.LanguageCode
+                LanguageCode = translationModel.LanguageCode ?? LanguageCodeHelper.DefaultLanguageCode
             };
 
             ApplyTranslationUpdates(translation, translationModel);
@@ -48,14 +50,14 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         return mapper.Map<ExperienceViewModel>(result);
     }
 
-    private bool IsLanguageCodeUnique(params string[] languageCodes)
+    private bool IsLanguageCodeUnique(IEnumerable<string?> languageCodes)
     {
-        return languageCodes.Distinct().Count() == languageCodes.Length;
+        return languageCodes.Distinct().Count() == languageCodes.Count();
     }
 
     public async Task<OneOf<ExperienceViewModel, ErrorModel>> UpdateAsync(Guid experienceId, ExperienceModel model, long userId, CancellationToken cancellationToken = default)
     {
-        var experience = await experienceRepository.GetAsync(experienceId, model.Translations.Select(t => t.LanguageCode).ToArray(), true, cancellationToken);
+        var experience = await experienceRepository.GetAsync(experienceId, [.. model.Translations.Select(t => t.LanguageCode)], true, cancellationToken);
 
         if (experience == null)
         {
@@ -74,15 +76,14 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
             }
         }
 
-        var result = await experienceRepository.UpdateAsync(experience);
+        var result = await experienceRepository.UpdateAsync(experience, cancellationToken);
 
         return mapper.Map<ExperienceViewModel>(result);
     }
 
     private void ApplyExperienceUpdates(Experience experience, ExperienceModel model)
     {
-        experience.BookInfirmation = model.BookInfirmation?.FromModel();
-        experience.CancellationPolicy = model.CancellationPolicy?.FromModel();
+        experience.CancellationPolicy = model.CancellationPolicy.FromModel();
         experience.PickupAvailable = model.PickupAvailable;
         experience.InstantTicketDelivery = model.InstantTicketDelivery;
         experience.MobileTicket = model.MobileTicket;
@@ -90,9 +91,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         experience.MaxGuests = model.MaxGuests;
         experience.IsAvailable = model.IsAvailable;
 
-        experience.SetTimeRange(model.TimeRange?.FromModel());
-        experience.SetCancellationPolicy(model.CancellationPolicy?.FromModel());
-        experience.SetBookInformation(model.BookInfirmation?.FromModel());
+        experience.SetCancellationPolicy(model.CancellationPolicy.FromModel());
     }
 
 
@@ -106,10 +105,13 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         translation.WhatToExpect = model.WhatToExpect;
 
         translation.SetServices(model.Services.FromModel());
+        translation.SetPickupPoints(model.PickupPoints.FromModel());
+        translation.SetPickupPoints(model.MeetingPoints.FromModel());
+        translation.SetEndPoint(model.EndPoint?.FromModel() ?? translation.EndPoint ?? new());
+        translation.SetTicketRedemptionPoint(model.TicketRedemptionPoint?.FromModel() ?? translation.TicketRedemptionPoint ?? new());
         translation.SetAdditionalInfos(model.AdditionalInfos.FromModel());
         translation.SetStops(model.Stops.FromModel());
-        translation.SetPlace(model.Place?.FromModel() ?? new PlaceInfo());
-        translation.SetPickup(model.Pickup?.FromModel() ?? new Pickup());
+        translation.SetPlace(model.Place?.FromModel() ?? translation.Place ?? new MapPoint());
     }
 
     public async Task<OneOf<ExperienceViewModel, ErrorModel>> AddTranslationAsync(Guid experienceId, ExperienceTranslationModel model, long userId, CancellationToken cancellationToken = default)
@@ -118,6 +120,11 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
         if (model == null)
         {
             return ExperienceErrorModelHelper.TranslationMissingError();
+        }
+
+        if (string.IsNullOrEmpty(model.LanguageCode))
+        {
+            return ExperienceErrorModelHelper.LanguageCodeMissingError();
         }
 
         var experience = await experienceRepository.GetAsync(experienceId, model.LanguageCode, true, cancellationToken);

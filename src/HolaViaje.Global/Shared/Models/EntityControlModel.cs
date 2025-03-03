@@ -1,6 +1,6 @@
 ﻿namespace HolaViaje.Global.Shared.Models;
 
-public record EntityControlModel
+public record struct EntityControlModel
 {
     public DateTime CreatedAt { get; set; }
     public DateTime LastModifiedAt { get; set; }

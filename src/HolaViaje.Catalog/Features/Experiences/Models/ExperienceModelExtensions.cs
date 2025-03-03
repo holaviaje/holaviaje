@@ -1,34 +1,55 @@
-﻿using HolaViaje.Global.Shared;
+﻿using HolaViaje.Catalog.Shared.Models;
+using HolaViaje.Global.Helpers;
 using HolaViaje.Global.Shared.Models;
 
 namespace HolaViaje.Catalog.Features.Experiences.Models;
 
 public static class ExperienceModelExtensions
 {
-
-    public static TimeRange FromModel(this TimeRangeModel model)
-    {
-        return new TimeRange(model.StartTime, model.EndTime, model.Duration);
-    }
-
-    public static Pickup FromModel(this PickupModel model)
+    public static ExperienceMapPoint FromModel(this ExperienceMapPointModel model)
     {
         return new()
         {
-            Address1 = model.Address1,
-            Address2 = model.Address2,
-            Place = model.Place?.FromModel() ?? new PlaceInfo(),
+            RecordId = ModelHelper.GetRecordId(model.RecordId),
+            Name = model.Name,
+            Address = model.Address,
+            Country = model.Country,
+            State = model.State,
+            City = model.City,
+            ZipCode = model.ZipCode,
+            Latitude = model.Latitude,
+            Longitude = model.Longitude,
+            Time = model.Time,
             Details = model.Details
         };
     }
 
-    public static IEnumerable<Service> FromModel(this IEnumerable<ServiceModel> models)
+    public static IEnumerable<ExperienceMapPoint> FromModel(this IEnumerable<ExperienceMapPointModel> models)
     {
-        return models.Select(model => new Service(model.Title, model.Included));
+        return models.Select(model => model.FromModel());
     }
 
-    public static IEnumerable<Stop> FromModel(this IEnumerable<StopModel> models)
+    public static IEnumerable<ExperienceService> FromModel(this IEnumerable<ExperienceServiceModel> models)
     {
-        return models.Select(model => new Stop(model.Title, model.Description, model.Duration, model.AdditionalInfo) { Place = model.Place?.FromModel() ?? new PlaceInfo() });
+        return models.Select(model => new ExperienceService
+        {
+            RecordId = ModelHelper.GetRecordId(model.RecordId),
+            Title = model.Title,
+            Included = model.Included
+        });
+    }
+
+    public static IEnumerable<ExperienceStop> FromModel(this IEnumerable<ExperienceStopModel> models)
+    {
+        return models.Select(model => new ExperienceStop
+        {
+            RecordId = ModelHelper.GetRecordId(model.RecordId),
+            StopOrder = model.StopOrder,
+            Title = model.Title,
+            Description = model.Description,
+            AdmissionTicket = model.AdmissionTicket,
+            Place = model.Place.FromModel(),
+            Duration = model.Duration.FromModel()
+        });
     }
 }

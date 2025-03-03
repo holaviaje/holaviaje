@@ -28,4 +28,9 @@ public static class ExperienceErrorModelHelper
     {
         return new ErrorModel(400, "The experience must have at least one translation.");
     }
+
+    public static ErrorModel LanguageCodeMissingError()
+    {
+        return new ErrorModel(400, "The language code is required.");
+    }
 }

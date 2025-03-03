@@ -1,3 +1,3 @@
 ﻿namespace HolaViaje.Catalog.Shared.Models;
 
-public record CancellationPolicyModel(CancellationPolicyType Policy, int DaysToCancel, int RefundPercentage) { }
+public record struct CancellationPolicyModel(CancellationPolicyType Policy, int DaysToCancel, int RefundPercentage) { }

@@ -1,3 +1,7 @@
 ﻿namespace HolaViaje.Catalog.Shared;
 
-public record AdditionalInfo(string Description) { }
+public sealed class AdditionalInfo
+{
+    public Guid RecordId { get; set; }
+    public string? Description { get; set; }
+}
