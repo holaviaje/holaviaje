@@ -20,7 +20,7 @@ public class ExperienceApplication(IExperienceRepository experienceRepository, I
             return ExperienceErrorModelHelper.TranslationMissingError();
         }
 
-        var languageCodes = model.Translations.Select(t => t.LanguageCode).ToHashSet();
+        var languageCodes = model.Translations.Select(t => t.LanguageCode).ToList();
         if (!IsLanguageCodeUnique(languageCodes))
         {
             return ExperienceErrorModelHelper.TranslationLanguageCodeMismatchError();

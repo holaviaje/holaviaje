@@ -23,7 +23,7 @@ public class ExperienceTranslation
 
     public Guid Id { get; set; }
     public Guid ExperienceId { get; set; }
-    public required Experience Experience { get; set; }
+    public Experience Experience { get; set; }
     public string LanguageCode { get; set; } = "EN";
     public string? Title { get; set; }
     public string? Description { get; set; }
@@ -48,13 +48,24 @@ public class ExperienceTranslation
     /// <param name="services"></param>
     public void SetServices(IEnumerable<ExperienceService> services)
     {
-        var servicesToAdd = services.Except(Services);
-        var servicesToRemove = Services.Except(services);
+        var servicesToAdd = services.ExceptBy(Services.Select(x => x.RecordId), x => x.RecordId).ToList();
+        var servicesToRemove = Services.ExceptBy(services.Select(x => x.RecordId), x => x.RecordId).ToList();
 
         // Remove services
         foreach (var service in servicesToRemove)
         {
             Services.Remove(service);
+        }
+
+        // Update existing services
+        foreach (var service in services)
+        {
+            var existingService = Services.FirstOrDefault(x => x.RecordId == service.RecordId);
+            if (existingService != null)
+            {
+                existingService.Title = service.Title;
+                existingService.Included = service.Included;
+            }
         }
 
         // Add new services
@@ -72,8 +83,8 @@ public class ExperienceTranslation
     /// <param name="pickupPoints"></param>
     public void SetPickupPoints(IEnumerable<ExperienceMapPoint> pickupPoints)
     {
-        var pickupPointsToAdd = pickupPoints.ExceptBy(PickupPoints.Select(x => x.RecordId), x => x.RecordId);
-        var pickupPointsToRemove = PickupPoints.ExceptBy(pickupPoints.Select(x => x.RecordId), x => x.RecordId);
+        var pickupPointsToAdd = pickupPoints.ExceptBy(PickupPoints.Select(x => x.RecordId), x => x.RecordId).ToList();
+        var pickupPointsToRemove = PickupPoints.ExceptBy(pickupPoints.Select(x => x.RecordId), x => x.RecordId).ToList();
 
         // Remove pickup points
         foreach (var pickupPoint in pickupPointsToRemove)
@@ -115,8 +126,8 @@ public class ExperienceTranslation
     /// <param name="meetingPoints"></param>
     public void SetMeetingPoints(IEnumerable<ExperienceMapPoint> meetingPoints)
     {
-        var meetingPointsToAdd = meetingPoints.ExceptBy(MeetingPoints.Select(x => x.RecordId), x => x.RecordId);
-        var meetingPointsToRemove = MeetingPoints.ExceptBy(meetingPoints.Select(x => x.RecordId), x => x.RecordId);
+        var meetingPointsToAdd = meetingPoints.ExceptBy(MeetingPoints.Select(x => x.RecordId), x => x.RecordId).ToList();
+        var meetingPointsToRemove = MeetingPoints.ExceptBy(meetingPoints.Select(x => x.RecordId), x => x.RecordId).ToList();
 
         // Remove meeting points
         foreach (var meetingPoint in meetingPointsToRemove)
@@ -180,8 +191,8 @@ public class ExperienceTranslation
     /// <param name="stops"></param>
     public void SetStops(IEnumerable<ExperienceStop> stops)
     {
-        var stopsToAdd = stops.ExceptBy(Stops.Select(x => x.RecordId), x => x.RecordId);
-        var stopsToRemove = Stops.ExceptBy(stops.Select(x => x.RecordId), x => x.RecordId);
+        var stopsToAdd = stops.ExceptBy(Stops.Select(x => x.RecordId), x => x.RecordId).ToList();
+        var stopsToRemove = Stops.ExceptBy(stops.Select(x => x.RecordId), x => x.RecordId).ToList();
 
         // Remove stops
         foreach (var stop in stopsToRemove)
@@ -222,8 +233,8 @@ public class ExperienceTranslation
     /// <param name="additionalInfos"></param>
     public void SetAdditionalInfos(IEnumerable<AdditionalInfo> additionalInfos)
     {
-        var additionalInfosToAdd = additionalInfos.ExceptBy(AdditionalInfos.Select(x => x.RecordId), x => x.RecordId);
-        var additionalInfosToRemove = AdditionalInfos.ExceptBy(additionalInfos.Select(x => x.RecordId), x => x.RecordId);
+        var additionalInfosToAdd = additionalInfos.ExceptBy(AdditionalInfos.Select(x => x.RecordId), x => x.RecordId).ToList();
+        var additionalInfosToRemove = AdditionalInfos.ExceptBy(additionalInfos.Select(x => x.RecordId), x => x.RecordId).ToList();
 
         // Remove additional infos
         foreach (var additionalInfo in additionalInfosToRemove)
