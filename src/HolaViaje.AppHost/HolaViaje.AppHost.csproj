@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HolaViaje.Account\HolaViaje.Account.csproj" />
+    <ProjectReference Include="..\HolaViaje.Catalog\HolaViaje.Catalog.csproj" />
     <ProjectReference Include="..\HolaViaje.Social\HolaViaje.Social.csproj" />
   </ItemGroup>
 
